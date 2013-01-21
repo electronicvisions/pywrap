@@ -3,7 +3,7 @@
 #include <tr1/array>
 #include <boost/array.hpp>
 
-#include "pyhalbe/pyarray/array_conv.hpp"
+#include "array_conv.hpp"
 
 using std::tr1::array;
 
