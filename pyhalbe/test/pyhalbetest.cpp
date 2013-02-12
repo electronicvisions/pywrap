@@ -1,4 +1,3 @@
-
 #include <array>
 #include <tr1/array>
 #include <boost/array.hpp>
