@@ -4,9 +4,7 @@
 #include <vector>
 
 #include "boost/shared_ptr.hpp"
-#ifdef HAVE_NUMPY
 #include "from_numpy.hpp"
-#endif
 
 namespace HMF {
 namespace pyplusplus {
@@ -25,9 +23,7 @@ struct extract_obj< std::vector<T> >
 	static void extract(boost::python::object const & arg, std::vector<T> & out) {
 		namespace bp = boost::python;
 		out.resize( bp::len(arg) );
-#ifdef HAVE_NUMPY
 		if( !from_numpy<T>::extract_vector(arg, out.begin(), out.end()) )
-#endif
 		{
 			for (size_t ii = 0; ii < out.size(); ii++) {
 				extract_obj<T>::extract(arg[ii], out[ii]);
@@ -41,9 +37,7 @@ struct extract_obj< std::array<T, N> >
 {
 	static void extract(boost::python::object const & arg, std::array<T, N> & out) {
 		namespace bp = boost::python;
-#ifdef HAVE_NUMPY
 		if( !from_numpy<T>::extract_vector(arg, out.begin(), out.end()) )
-#endif
 		{
 			for (size_t ii = 0; ii < out.size(); ii++) {
 				extract_obj<T>::extract(arg[ii], out[ii]);
@@ -57,9 +51,7 @@ struct extract_obj< std::array< std::array<T, N>, M > >
 {
 	static void extract(boost::python::object const & arg, std::array< std::array<T, N>, M> & out) {
 		namespace bp = boost::python;
-#ifdef HAVE_NUMPY
 		if( !from_numpy<T>::extract_matrix(arg, out.begin(), out.end()) )
-#endif
 		{
 			for (size_t ii = 0; ii < M; ii++) {
 				for (size_t jj = 0; jj < N; jj++) {
