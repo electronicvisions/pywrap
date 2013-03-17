@@ -1,58 +1,63 @@
 #include <array>
-#include <tr1/array>
+#include <bitset>
 #include <boost/array.hpp>
 
-#include "array_conv.hpp"
+#include "pyhalbe/expose_array_operator.hpp"
+#include "pyhalbe/return_numpy_policy.hpp"
 
-using std::tr1::array;
+class Y {
+public:
+	int & operator[](size_t ii) { return data[ii]; }
 
-typedef array< int, 7u> array_t;
+private:
+	int data[3200]; // To large value causes segfault, why?
+};
 
-array_t test_array_out()
+class Z {
+public:
+	Y & operator[](size_t ii) { return data[ii]; }
+	const Y & operator[](size_t ii) const { return data[ii]; }
+
+private:
+	Y data[30];
+};
+
+std::vector<double> makeDoubleVector()
 {
-	return {{1,2,3,7,3,2,1}};
+	return std::vector<double>({0,1,2,3,4,5,6,7,8,9});
 }
 
-array_t test_array_in(array_t x)
+std::vector<unsigned short> makeUShortVector()
 {
-	return x; 
-}
-
-typedef array< std::array<int, 3>, 3> complex_array_t;
-
-complex_array_t test_complex_array_out() {
-	    return {{{{1,2,3}},{{2,3,4}},{{7,3,2}}}};
-}
-
-complex_array_t test_complex_array_in(complex_array_t x) {
-	    return x; 
-}
-
-typedef array< bool, 7u> bool_array_t;
-
-bool_array_t test_bool_array_out() {
-	    return {{true, false, false, true, true, true, false}};
-}
-
-bool_array_t test_bool_array_in(bool_array_t x) {
-	    return x; 
+	return std::vector<unsigned short>({0,1,2,3,4,5,6,7,8,9});
 }
 
 BOOST_PYTHON_MODULE(pyhalbe_test)
 {
     using namespace boost::python;
+	using namespace ::HMF::pyplusplus;
 
-    def("test_array_in",  test_array_in);
-    def("test_array_out", test_array_out);
-	XArray_from_PyObject< array_t >::reg();
+	import("pyublas");
 
-    def("test_complex_array_in",  test_complex_array_in);
-    def("test_complex_array_out", test_complex_array_out);
-	XArray_from_PyObject< complex_array_t >::reg();
+    class_<Y>("Y")
+        .def(expose_array_operator(&Y::operator[]))
+    ;
 
-    def("test_bool_array_in",  test_bool_array_in);
-    def("test_bool_array_out", test_bool_array_out);
-	XArray_from_PyObject< bool_array_t >::reg();
+	typedef const Y & (Z::* Z_index_operator)(size_t) const;
+    class_<Z>("Z")
+        .def(expose_array_operator( Z_index_operator(&Z::operator[]) ) )
+    ;
+
+	{
+		typedef std::bitset<12> bitset_type;
+		typedef bitset_type::reference (bitset_type::* operator_type)(std::size_t);
+		class_<bitset_type>("MiniBitset12")
+			.def(expose_array_operator(operator_type(&bitset_type::operator[]), default_call_policies(), bool() ))
+		;
+	}
+	
+	def("makeDoubleVector", &makeDoubleVector, ::HMF::pyplusplus::ReturnNumpyPolicy());
+	def("makeUShortVector", &makeUShortVector, ::HMF::pyplusplus::ReturnNumpyPolicy());
 }
 
 
