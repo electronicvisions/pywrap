@@ -141,6 +141,7 @@ class array_operator_visitor :
  	public boost::python::def_visitor< array_operator_visitor<Traits> >
 {
 public:
+	typedef Traits                         traits_type;
 	typedef typename Traits::operator_type operator_type;
 	typedef typename Traits::class_type    class_type;
 	typedef typename Traits::value_type    value_type;
