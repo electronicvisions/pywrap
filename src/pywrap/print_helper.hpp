@@ -17,7 +17,6 @@ namespace pyplusplus {
 	template <typename T>
 	std::string printClassNice(const T & obj, std::string name)
 	{
-		typedef typename T::value_type value_type;
 		std::stringstream out;
 		out << name << "("
 			<< obj
