@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+
+from waflib.extras.gtest import summary
+from os.path import join
+
+def depends(ctx):
+    ctx('pywrap')
+
+def options(opt):
+    opt.load('g++')
+    opt.load('pytest')
+
+def configure(cfg):
+    cfg.load('g++')
+    cfg.load('pytest')
+
+def build(bld):
+    flags = {
+            "cxxflags" : [
+                '-std=c++0x',
+                '-pedantic',
+                '-Wall',
+                '-Wextra',
+                '-Wno-c++0x-compat',
+                '-Wno-c++11-compat',
+                '-ggdb3',
+                ],
+            "defines" : [],
+            }
+
+    bld(
+            target         = "pywrap_example",
+            module         = "pywrap_example",
+            features       = 'cxx pypp cxxshlib pyext pyembed',
+            gen_defines    = 'PYPLUSPLUS __STRICT_ANSI__',
+            script         = 'generate.py',
+            headers        = bld.path.ant_glob("src/*.h") + bld.path.ant_glob("src/*.hpp"),
+            source         = bld.path.ant_glob("src/*.cpp"),
+            linkflags      = '-Wl,-z,defs',
+            install_path   = 'lib',
+            **flags
+            )
+
+    bld(
+            tests           = bld.path.ant_glob("test/*.py"),
+            features        = 'pytest',
+            use             = 'pywrap_example',
+            install_path    = join('bin', 'test'),
+    )
+    bld.add_post_fun(summary)
