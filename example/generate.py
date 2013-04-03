@@ -1,17 +1,19 @@
 #!/usr/bin/env python
 
-from pywrap.Boilerplate import Boilerplate
+from pywrap.wrapper import Wrapper
+import pywrap.namespaces as ns
 
-bp = Boilerplate()
+wrap = Wrapper()
+mb = wrap.mb
 
 # include everything from test namespace
-bp.mb.namespace("test").include()
+mb.namespace("test").include()
 
 # expose only public interfaces
-bp.exclude_by_access_type(['variables', 'calldefs', 'classes'], 'private')
-bp.exclude_by_access_type(['variables', 'calldefs', 'classes'], 'protected')
+ns.exclude_by_access_type(mb, ['variables', 'calldefs', 'classes'], 'private')
+ns.exclude_by_access_type(mb, ['variables', 'calldefs', 'classes'], 'protected')
 
 # exclude names begining with a single underscore or ending with Cpp
-bp.exclude_by_regex(['calldefs'], r'(^_[^_])|(.*Cpp$)|(^impl$)')
+ns.exclude_by_regex(mb, ['calldefs'], r'(^_[^_])|(.*Cpp$)|(^impl$)')
 
-bp.finish()
+wrap.finish()
