@@ -28,6 +28,9 @@ class Wrapper(object):
         from IPython.frontend.terminal.embed import InteractiveShellEmbed
         return InteractiveShellEmbed()
 
+    def module_name(self):
+        return self.args.module_name
+
     def finish(self):
         # Py++ will generate next code: def( ..., function type( function ref )
         # => safe for function overloading
@@ -38,7 +41,7 @@ class Wrapper(object):
 
         # Creating code creator.
         # After this step you should not modify/customize declarations.
-        self.mb.build_code_creator(module_name=self.args.module_name)
+        self.mb.build_code_creator(module_name=self.module_name())
         self.mb.code_creator.license = self.license
 
         # Prevent absolute includes within code.
