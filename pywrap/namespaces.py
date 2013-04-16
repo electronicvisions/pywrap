@@ -3,7 +3,7 @@ import logging
 
 import classes
 from matchers import (
-    access_type_matcher_t, custom_matcher_t, namespace_contains_matcher_t
+        access_type_matcher_t, custom_matcher_t, namespace_contains_matcher_t, declaration_not_found_t
 )
 
 
@@ -114,7 +114,7 @@ def expose_typedefs(mb, ns, cross_namespace_aliases=True):
             continue
 
         # Typedefs in this namespace
-        if namespace_matcher_t(ns.name)(td.parent):
+        if namespace_contains_matcher_t(ns.name)(td.parent):
             log.info('New alias: %s -> %s', td.name, target.alias)
             mb.add_registration_code(_exception_wrapper % (
                 _ns_typedef % (td.name, target.alias)))

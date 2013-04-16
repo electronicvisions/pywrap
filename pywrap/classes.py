@@ -1,6 +1,7 @@
 """utility functions to be applied on classes"""
 
 import collections
+from matchers import access_type_matcher_t
 
 def get_all_bases(cls, only_public = True ):
     """Returns recursivly all (public) bases of a class"""

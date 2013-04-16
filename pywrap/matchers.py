@@ -1,6 +1,10 @@
 from pygccxml.declarations import matcher, matchers, templates
 
 from pygccxml.declarations.matchers import *
+from pygccxml.declarations.matcher import matcher
+declaration_not_found_t       = matcher.declaration_not_found_t
+multiple_declarations_found_t = matcher.multiple_declarations_found_t
+
 
 class namespace_contains_matcher_t(matchers.declaration_matcher_t):
     """
