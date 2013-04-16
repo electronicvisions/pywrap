@@ -1,4 +1,5 @@
 import os
+import sys
 import argparse
 
 import pyplusplus
@@ -26,7 +27,11 @@ class Wrapper(object):
     @property
     def ishell(self):
         from IPython.frontend.terminal.embed import InteractiveShellEmbed
-        return InteractiveShellEmbed()
+
+        if sys.stdout.isatty():
+            return InteractiveShellEmbed()
+        else:
+            return lambda *v, **k: None
 
     def finish(self):
         # Py++ will generate next code: def( ..., function type( function ref )
