@@ -1,5 +1,6 @@
 import os
 import argparse
+import logging
 
 import pyplusplus
 
@@ -7,6 +8,8 @@ import pyplusplus
 class Wrapper(object):
     def __init__(self, license='//greetings earthling'):
         self.license = license
+
+        logging.basicConfig(level=logging.INFO)
 
         parser = argparse.ArgumentParser(description='Generate Python Bindings')
         parser.add_argument('-I', '--include', dest='includes', action='append')

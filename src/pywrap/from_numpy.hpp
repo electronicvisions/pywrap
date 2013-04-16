@@ -1,12 +1,11 @@
 #pragma once
 
 #include <boost/python.hpp>
-
-#include "pyublas/numpy.hpp"
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 
-namespace HMF {
-namespace pyplusplus {
+#include "pyublas/numpy.hpp"
+
+namespace pywrap {
 
 template <typename T>
 struct from_numpy {
@@ -18,6 +17,32 @@ struct from_numpy {
 	typedef const boost::python::object & obj_type;
 	typedef typename std::conditional<std::is_arithmetic<T>::value,
 			arithmetic_tag, not_arithmetic_tag>::type tag_type;
+
+	template <template<size_t> class Bitset, size_t N>
+	static bool extract_bitset(obj_type obj, Bitset<N> & bitset)
+	{
+		static_assert(std::is_same<T, bool>::value, "do bitset can only used with bool");
+
+		namespace bp = boost::python;
+		bp::extract<vector_type> type_checker(obj);
+		if (type_checker.check())
+		{
+			const vector_type & a = type_checker();
+			if ( N != a.size() )
+			{
+				std::stringstream err;
+				err << "Size missmatch, expected shape (" << N
+					<< ",) got (" << a.size() << ",)";
+				throw std::out_of_range(err.str());
+			}
+			for (size_t ii = 0; ii < N; ++ii)
+			{
+				bitset[ii] = a[ii];
+			}
+			return true;
+		}
+		return false;
+	}
 
 	template <typename iterator>
 	static bool extract_vector(obj_type obj, iterator begin, iterator end)
@@ -159,5 +184,4 @@ private:
 	}
 };
 
-} // end namespace pyplusplus
-} // end namespace HMF
+} // end namespace pywrap

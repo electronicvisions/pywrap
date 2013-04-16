@@ -4,9 +4,7 @@
 #include <functional>
 #include <boost/python.hpp>
 
-
-namespace HMF {
-namespace pyplusplus {
+namespace pywrap {
 
 	template <std::size_t N>
 	std::ostream & operator<<(std::ostream & out, const std::bitset<N>& obj)
@@ -24,7 +22,7 @@ namespace pyplusplus {
 		return out.str();
 	}
 
-	class PrintNice : 
+	class PrintNice :
 		public boost::python::def_visitor<PrintNice>
 	{
 	public:
@@ -33,13 +31,12 @@ namespace pyplusplus {
 		{
 			typedef typename classT::wrapped_type wrapped_type;
 			std::string name = boost::python::extract<std::string>(c.attr("__name__"));
-			auto f = std::bind(HMF::pyplusplus::printClassNice< wrapped_type >, std::placeholders::_1, name);
+			auto f = std::bind(::pywrap::printClassNice< wrapped_type >, std::placeholders::_1, name);
 			typedef boost::mpl::vector<std::string, wrapped_type> f_signature;
 			c.def("__str__", bp::make_function(f, boost::python::default_call_policies(), f_signature()));
 		}
 	};
 
 
-} // end namespace pyplusplus
-} // end namespace HMF
+} // end namespace pywrap
 

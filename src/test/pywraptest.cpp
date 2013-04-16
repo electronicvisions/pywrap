@@ -2,8 +2,9 @@
 #include <bitset>
 #include <boost/array.hpp>
 
-#include "pyhalbe/expose_array_operator.hpp"
-#include "pyhalbe/return_numpy_policy.hpp"
+#include "pywrap/create_constructor.hpp"
+#include "pywrap/expose_array_operator.hpp"
+#include "pywrap/return_numpy_policy.hpp"
 
 struct X {
 	int operator[](size_t ii) { return ii; }
@@ -39,7 +40,7 @@ std::vector<unsigned short> makeUShortVector()
 // Some compile time checks on expose_array_operator
 void test_array_trais()
 {
-	using namespace ::HMF::pyplusplus;
+	using namespace ::pywrap;
     using namespace boost::python;
 	{
 		typedef decltype(expose_array_operator( &X::operator[]) ) exposer_type;
@@ -103,10 +104,10 @@ void test_array_trais()
 	}
 }
 
-BOOST_PYTHON_MODULE(pyhalbe_test)
+BOOST_PYTHON_MODULE(pywraptestmodule)
 {
     using namespace boost::python;
-	using namespace ::HMF::pyplusplus;
+	using namespace ::pywrap;
 
 	import("pyublas");
 
@@ -124,11 +125,12 @@ BOOST_PYTHON_MODULE(pyhalbe_test)
 		typedef bitset_type::reference (bitset_type::* operator_type)(std::size_t);
 		class_<bitset_type>("MiniBitset12")
 			.def(expose_array_operator(operator_type(&bitset_type::operator[]), default_call_policies(), bool() ))
+			.def("__init__", make_constructor(&::pywrap::create_constructor< ::std::bitset<12> >::construct))
 		;
 	}
-	
-	def("makeDoubleVector", &makeDoubleVector, ::HMF::pyplusplus::ReturnNumpyPolicy());
-	def("makeUShortVector", &makeUShortVector, ::HMF::pyplusplus::ReturnNumpyPolicy());
+
+	def("makeDoubleVector", &makeDoubleVector, ReturnNumpyPolicy());
+	def("makeUShortVector", &makeUShortVector, ReturnNumpyPolicy());
 }
 
 

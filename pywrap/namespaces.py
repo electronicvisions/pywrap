@@ -96,9 +96,9 @@ _cls_typedef = 'bp::scope().attr("%s").attr("%s") = bp::scope().attr("%s");'
 
 def expose_typedefs(mb, ns, cross_namespace_aliases=True):
     log = logging.getLogger('pywrap.typedefs.aliases')
-    log.debug('Searching namespace %s for typedefs.', ns.name)
+    log.info('Searching namespace %s for typedefs.', ns.name)
     for td in ns.typedefs(allow_empty=True):
-        log.debug('Found typedef %s in %s.', td.name, td.parent.name)
+        log.info('Found typedef %s in %s.', td.name, td.parent.name)
         try:
             target = mb.class_(td.type.decl_string)
             # TODO: By enforcing target to be contained in the same ns
@@ -110,7 +110,7 @@ def expose_typedefs(mb, ns, cross_namespace_aliases=True):
                     or target.indexing_suite is not None):
                 target.include()
         except declaration_not_found_t:
-            log.debug('Target not found: %s', td.type.decl_string)
+            log.info('Target not found: %s', td.type.decl_string)
             continue
 
         # Typedefs in this namespace

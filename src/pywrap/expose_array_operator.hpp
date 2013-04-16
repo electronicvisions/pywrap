@@ -4,10 +4,7 @@
 #include <type_traits>
 #include <boost/python.hpp>
 
-namespace HMF 
-{
-namespace pyplusplus
-{
+namespace pywrap {
 
 namespace detail
 {
@@ -18,7 +15,7 @@ namespace detail
 	struct auto_policy_type {
 		typedef boost::python::default_call_policies type;
 	};
-	
+
 	template<>
 	struct auto_policy_type<true, true, true> {
 		typedef boost::python::return_value_policy<boost::python::copy_const_reference> type;
@@ -41,7 +38,7 @@ namespace detail
 		static const bool is_ref =  std::is_reference< ValueType >::value;
 		static const bool is_const = std::is_const<typename std::remove_reference<ValueType>::type>::value;
 
-		typedef typename std::conditional< 
+		typedef typename std::conditional<
 			std::is_same<Policy, array_operator_auto_policy_type>::value,
 			typename auto_policy_type<is_intergral, is_ref, is_const>::type,
 			Policy
@@ -51,16 +48,16 @@ namespace detail
 	template <typename ReturnType, typename ForcedValueType>
 	struct array_operator_get_value_type
 	{
-		static const bool has_setter_value_type = 
+		static const bool has_setter_value_type =
 			!std::is_same<ForcedValueType, array_operator_auto_value_type>::value;
-	
+
 		typedef typename std::conditional<
 			std::is_integral< typename std::decay<ReturnType>::type >::value,
-			typename std::decay<ReturnType>::type,	
-			ReturnType	
+			typename std::decay<ReturnType>::type,
+			ReturnType
 				>::type deduced_value_type;
 
-		typedef typename std::conditional< has_setter_value_type, 
+		typedef typename std::conditional< has_setter_value_type,
 			ForcedValueType,
 			deduced_value_type
 			>::type type;
@@ -74,7 +71,7 @@ namespace detail
 		static_assert(sizeof(Operator) == 0, "First template argument must be a member function pointer");
 	};
 
-	template <typename T, typename Ret, typename KeyValue, 
+	template <typename T, typename Ret, typename KeyValue,
 			 typename Policy, typename ForcedValueType>
 	struct array_operator_traits<Ret (T::*)(KeyValue), Policy, ForcedValueType>
 	{
@@ -90,7 +87,7 @@ namespace detail
 			(std::is_reference<Ret>::value && !std::is_const<typename std::remove_reference<Ret>::type>::value);
 	};
 
-	template <typename T, typename Ret, typename KeyValue, 
+	template <typename T, typename Ret, typename KeyValue,
 			 typename Policy, typename ForcedValueType>
 	struct array_operator_traits<Ret (T::*)(KeyValue) const, Policy, ForcedValueType>
 	{
@@ -107,12 +104,12 @@ namespace detail
 	};
 
 	template <class classT, class Traits, bool>
-	struct make_setitem 
+	struct make_setitem
 	{
 		typedef typename Traits::operator_type operator_type;
 		static void def(classT&, operator_type) {}
 	};
-	
+
 	template <class classT, class Traits>
 	struct make_setitem<classT, Traits, true>
 	{
@@ -137,8 +134,8 @@ namespace detail
 }
 
 template <typename Traits>
-class array_operator_visitor : 
- 	public boost::python::def_visitor< array_operator_visitor<Traits> >
+class array_operator_visitor :
+	public boost::python::def_visitor< array_operator_visitor<Traits> >
 {
 public:
 	typedef Traits                         traits_type;
@@ -148,7 +145,7 @@ public:
 	typedef typename Traits::key_type      key_type;
 	typedef typename Traits::policy_type   policy_type;
 
-	array_operator_visitor(operator_type op, policy_type po = policy_type()) : 
+	array_operator_visitor(operator_type op, policy_type po = policy_type()) :
 		operator_fun(op),
 		policy(po)
 	{}
@@ -162,10 +159,10 @@ public:
 		auto boost_f = boost::python::make_function(getitem_f,
 				policy,
 				boost::mpl::vector<value_type, class_type, key_type>());
-        c.def("__getitem__", boost_f); 
+        c.def("__getitem__", boost_f);
 		detail::make_setitem<classT, Traits, Traits::make_setitem>::def(c, operator_fun);
     }
-	
+
 	static value_type getitem(class_type & t, key_type key, operator_type op)
 	{
 		return (t.*op)(key);
@@ -195,6 +192,5 @@ expose_array_operator( Operator op, Policy policy = Policy(), ForcedValueType = 
 		>(op, policy);
 }
 
-} // end pyplusplus
-} // end HMF
+} // end pywrap
 

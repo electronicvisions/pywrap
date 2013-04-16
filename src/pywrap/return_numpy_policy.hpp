@@ -3,8 +3,7 @@
 #include <boost/python.hpp>
 #include "pyublas/numpy.hpp"
 
-namespace HMF {
-namespace pyplusplus {
+namespace pywrap {
 
 template<typename T>
 struct is_std_vector : boost::false_type {};
@@ -47,5 +46,4 @@ struct ReturnNumpy
 
 typedef boost::python::return_value_policy<ReturnNumpy> ReturnNumpyPolicy;
 
-} // end namespace pyplusplus
-} // end namespace HMF
+} // end namespace pywrap

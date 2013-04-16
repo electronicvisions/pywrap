@@ -18,9 +18,9 @@ def get_casting_operators(cls, *types):
         ops.extend(tmp.to_list())
 
 
-_numpy_construtor_decl_code = '#include "create_constructor.hpp"'
+_numpy_construtor_decl_code = '#include "pywrap/create_constructor.hpp"'
 _numpy_construtor_reg_code = (
-        'def( "__init__", boost::python::make_constructor(&HMF::pyplusplus::create_constructor< {} >::construct))',
+        'def( "__init__", boost::python::make_constructor(&::pywrap::create_constructor< {} >::construct))',
 )
 
 def add_numpy_construtor(c):
@@ -28,8 +28,8 @@ def add_numpy_construtor(c):
     for code in _numpy_construtor_reg_code:
         c.add_registration_code(code.format(c.decl_string))
 
-_array_operator_include  = '#include "expose_array_operator.hpp"'
-_array_operator_code = 'def(::HMF::pyplusplus::expose_array_operator( (%(type)s)(%(op)s), %(policy)s ))'
+_array_operator_include  = '#include "pywrap/expose_array_operator.hpp"'
+_array_operator_code = 'def(::pywrap::expose_array_operator( (%(type)s)(%(op)s), %(policy)s ))'
 
 def add_array_operators(c, policy = None, value_type = None):
     ops = c.member_operators("operator[]", allow_empty=True).to_list()

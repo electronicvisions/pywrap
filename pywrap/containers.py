@@ -136,9 +136,9 @@ class STLExposerBase(object):
 class Sequence_Exposer(STLExposerBase):
     containers = ["array", "vector"]
 
-    decl_code = '#include "create_constructor.hpp"'
+    decl_code = '#include "pywrap/create_constructor.hpp"'
     reg_code = (
-            'def( "__init__", boost::python::make_constructor(&HMF::pyplusplus::create_constructor< {} >::construct))',
+            'def( "__init__", boost::python::make_constructor(&::pywrap::create_constructor< {} >::construct))',
     )
 
     @classmethod
