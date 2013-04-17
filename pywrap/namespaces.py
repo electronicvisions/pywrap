@@ -101,6 +101,7 @@ def expose_typedefs(mb, ns, recurse=True, cross_namespace_aliases=True):
     ns_matcher = namespace_contains_matcher_t(ns.name, recurse)
 
     for td in ns.typedefs(ns_matcher, allow_empty=True):
+        td.exclude()
         to_log = ' %s::%s ' % (td.parent.name, td.name)
         try:
             target = mb.class_(td.type.decl_string)
@@ -115,7 +116,9 @@ def expose_typedefs(mb, ns, recurse=True, cross_namespace_aliases=True):
         # as bool is not contained in the same namespace.
         # Targets in other namespaces would however require
         # different code in _ns_typedef and _cls_typedef.
-        if (not (cross_namespace_aliases or ns_matcher(target)
+        if (not (cross_namespace_aliases
+                or ns_matcher(target)
+                or namespace_contains_matcher_t("::std")(target)
                 or not target.indexing_suite is None)):
             to_log += ' target "%s" in diffrent namespace' % td.type.decl_string
             log.info(to_log)

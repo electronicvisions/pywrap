@@ -9,7 +9,7 @@
 
 namespace pywrap {
 
-template <typename T>
+template <typename T, typename U = void>
 struct extract_obj
 {
 	static void extract(boost::python::object const & arg, T & out) {
@@ -23,9 +23,14 @@ struct extract_obj< std::bitset<N> >
 	static void extract(boost::python::object const & arg, std::bitset<N> & out) {
 		namespace bp = boost::python;
 		bp::extract<unsigned long> number(arg);
+		bp::extract<std::string> string(arg);
 		if (number.check())
 		{
 			out = std::bitset<N>(number());
+		}
+		else if(string.check())
+		{
+			 out = std::bitset<N>(string());
 		}
 		else if( !from_numpy<bool>::extract_bitset(arg, out) )
 		{

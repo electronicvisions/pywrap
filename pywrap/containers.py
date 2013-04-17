@@ -14,11 +14,8 @@ def beautify_stl_container_names(ns):
 def extend_std_containers(ns):
     STL_Containers.expose(ns)
 
-def get_stl_ontainers(ns, *names):
-    ret = []
-    for name, containers in _STL_Containers.find(ns, *names):
-        ret.extend(containers)
-    return ret
+def get_stl_containers(ns, *names):
+    return STL_Containers.find(ns, names)
 
 class STLExposer(type):
     registered_exposers = {}
@@ -148,7 +145,6 @@ class Bitset_Exposer(Sequence_Exposer):
 
     @classmethod
     def expose(cls, c):
-        c.include()
         super(Bitset_Exposer, cls).expose(c)
         c.mem_opers().include()
         c.allow_implicit_conversion = True
