@@ -22,7 +22,12 @@ struct extract_obj< std::bitset<N> >
 {
 	static void extract(boost::python::object const & arg, std::bitset<N> & out) {
 		namespace bp = boost::python;
-		if( !from_numpy<bool>::extract_bitset(arg, out) )
+		bp::extract<unsigned long> number(arg);
+		if (number.check())
+		{
+			out = std::bitset<N>(number());
+		}
+		else if( !from_numpy<bool>::extract_bitset(arg, out) )
 		{
 			for (size_t ii = 0; ii < out.size(); ii++) {
 				out[ii] = boost::python::extract<bool>(arg[ii]);
