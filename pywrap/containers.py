@@ -136,11 +136,6 @@ class STLExposerBase(object):
 class Sequence_Exposer(STLExposerBase):
     containers = ["array", "vector"]
 
-    decl_code = '#include "pywrap/create_constructor.hpp"'
-    reg_code = (
-            'def( "__init__", boost::python::make_constructor(&::pywrap::create_constructor< {} >::construct))',
-    )
-
     @classmethod
     def expose(cls, c):
         super(Sequence_Exposer, cls).expose(c)
