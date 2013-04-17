@@ -1,7 +1,7 @@
 """utility functions to be applied on classes"""
 
 import collections
-from matchers import access_type_matcher_t
+from matchers import access_type_matcher_t, declaration_not_found_t
 
 def get_all_bases(cls, only_public = True ):
     """Returns recursivly all (public) bases of a class"""
@@ -64,8 +64,15 @@ def add_default_copy_construtor(c):
     Py++ to include it"""
     if c.noncopyable:
         return
-    ctor = c.find_copy_constructor()
-    if ctor and ctor.is_artificial and ctor.access_type == 'public':
-        ctor.exportable = True
-        ctor.is_artificial = False
-        ctor.include()
+    copy_ctor = c.find_copy_constructor()
+    default_ctor = c.find_trivial_constructor()
+    if copy_ctor and copy_ctor.is_artificial and copy_ctor.access_type == 'public':
+        copy_ctor.exportable = True
+        copy_ctor.is_artificial = False
+        copy_ctor.include()
+        if default_ctor and default_ctor.is_artificial:
+            default_ctor.exportable = True
+            default_ctor.is_artificial = False
+            default_ctor.include()
+
+
