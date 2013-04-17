@@ -3,7 +3,9 @@ import logging
 
 import classes
 from matchers import (
-        access_type_matcher_t, custom_matcher_t, namespace_contains_matcher_t, declaration_not_found_t
+        access_type_matcher_t, custom_matcher_t,
+        namespace_contains_matcher_t, declaration_not_found_t,
+        match_std_container_t
 )
 from pyplusplus.decl_wrappers import namespace_t, class_t
 
@@ -80,6 +82,14 @@ def include_default_copy_constructors(ns):
     for c in ns.classes(allow_empty = True):
         classes.add_default_copy_construtor(c)
 
+def get_deps(ns, matcher = lambda : True, recurse=True):
+    decls = set()
+    for decl in ns.declarations:
+        if recurse or not isinstance(decl, namespace_t):
+            for deps in  decl.i_depend_on_them():
+                d = [ decl for decl in deps.find_out_depend_on_it_declarations() if matcher(decl) ]
+                decls.update(d)
+    return decls
 
 # We need to wrap the generated code to print but ignore errors
 # as creating aliases for typedefs may trigger attribute errors
