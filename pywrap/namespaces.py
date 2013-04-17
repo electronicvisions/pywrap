@@ -5,7 +5,7 @@ import classes
 from matchers import (
         access_type_matcher_t, custom_matcher_t, namespace_contains_matcher_t, declaration_not_found_t
 )
-
+from pyplusplus.decl_wrappers import namespace_t, class_t
 
 def find(namespace, groups, filters, allow_empty=False):
     """Yields all objects in groups ('classes', 'namespaces', ...)
@@ -94,40 +94,50 @@ _exception_wrapper = '''try {
 _ns_typedef = 'bp::scope().attr("%s") = bp::scope().attr("%s");'
 _cls_typedef = 'bp::scope().attr("%s").attr("%s") = bp::scope().attr("%s");'
 
-def expose_typedefs(mb, ns, cross_namespace_aliases=True):
+def expose_typedefs(mb, ns, recurse=True, cross_namespace_aliases=True):
     log = logging.getLogger('pywrap.typedefs.aliases')
     log.info('Searching namespace %s for typedefs.', ns.name)
-    for td in ns.typedefs(allow_empty=True):
-        log.info('Found typedef %s in %s.', td.name, td.parent.name)
+
+    ns_matcher = namespace_contains_matcher_t(ns.name, recurse)
+
+    for td in ns.typedefs(ns_matcher, allow_empty=True):
+        to_log = ' %s::%s ' % (td.parent.name, td.name)
         try:
             target = mb.class_(td.type.decl_string)
-            # TODO: By enforcing target to be contained in the same ns
-            # aliases like BaseType<bool>.value_type will be skipped
-            # as bool is not contained in the same namespace.
-            # Targets in other namespaces would however require
-            # different code in _ns_typedef and _cls_typedef.
-            if (namespace_contains_matcher_t(ns.name)(target)
-                    or target.indexing_suite is not None):
-                target.include()
+            to_log += ' -> ' + str(target.name) + ': '
         except declaration_not_found_t:
-            log.info('Target not found: %s', td.type.decl_string)
+            to_log += ' target "%s" not found' % td.type.decl_string
+            log.info(to_log)
             continue
 
+        # TODO: By enforcing target to be contained in the same ns
+        # aliases like BaseType<bool>.value_type will be skipped
+        # as bool is not contained in the same namespace.
+        # Targets in other namespaces would however require
+        # different code in _ns_typedef and _cls_typedef.
+        if (not (cross_namespace_aliases or ns_matcher(target)
+                or not target.indexing_suite is None)):
+            to_log += ' target "%s" in diffrent namespace' % td.type.decl_string
+            log.info(to_log)
+            continue
+
+        target.include()
+
         # Typedefs in this namespace
-        if namespace_contains_matcher_t(ns.name)(td.parent):
-            log.info('New alias: %s -> %s', td.name, target.alias)
+        if isinstance(td.parent, namespace_t):
+            to_log += 'New alias: %s -> %s' % (td.name, target.alias)
             mb.add_registration_code(_exception_wrapper % (
                 _ns_typedef % (td.name, target.alias)))
 
         # Public typdefs in classes of this namespace
         elif (access_type_matcher_t('public')(td) and
-                namespace_contains_matcher_t(ns.name)(td.parent)):
+                isinstance(td.parent, class_t)):
 
-            log.info(
-                'New alias: %s::%s -> %s',
-                td.parent.alias, td.name, target.alias)
+            to_log += 'New alias: %s::%s -> %s' % (
+                    td.parent.alias, td.name, target.alias)
             mb.add_registration_code(_exception_wrapper % (
                 _cls_typedef % (td.parent.alias, td.name, target.alias)))
 
         else:
-            log.info('Skipping %s.', td.name)
+            to_log += 'ignored'
+        log.info(to_log)
