@@ -12,8 +12,6 @@ except ImportError:
         'components')
 
     dependencies = [
-        os.path.join(comp_dir, 'pygccxml'),
-        os.path.join(comp_dir, 'pyplusplus'),
     ]
     recurse = lambda ctx: map(lambda dep: ctx.recurse(dep), dependencies)
 
