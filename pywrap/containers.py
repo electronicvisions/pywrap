@@ -4,7 +4,7 @@ import classes
 from matchers import match_std_container_t, namespace_contains_matcher_t
 from pygccxml.declarations import templates
 from pyplusplus.module_builder import call_policies
-
+from pyplusplus.messages import warnings_
 from pyplusplus.decl_wrappers.enumeration_wrapper import enumeration_t
 
 
@@ -137,6 +137,9 @@ class Sequence_Exposer(STLExposerBase):
     def expose(cls, c):
         super(Sequence_Exposer, cls).expose(c)
         classes.add_numpy_construtor(c)
+        c.disable_warnings(warnings_.W1008)
+        for f in c.mem_funs():
+            f.disable_warnings(warnings_.W1008, warnings_.W1050)
 
 class Bitset_Exposer(Sequence_Exposer):
     containers = ["bitset"]
@@ -151,6 +154,8 @@ class Bitset_Exposer(Sequence_Exposer):
         for f in c.member_functions(name = lambda x: x.name in ("set", "reset", "flip") ):
             f.call_policies = call_policies.return_self()
         classes.add_array_operators(c, "bp::default_call_policies()", "bool()")
+        c.operator(">>").disable_warnings(warnings_.W1014)
+        c.operator("<<").disable_warnings(warnings_.W1014)
 
     @classmethod
     def create_alias(cls, c):
