@@ -1,6 +1,6 @@
 """utility functions to be applied on classes"""
 
-import collections
+import collections, re
 from matchers import access_type_matcher_t, declaration_not_found_t
 
 def get_all_bases(cls, only_public = True ):
@@ -76,3 +76,15 @@ def add_default_copy_construtor(c):
             default_ctor.include()
 
 
+_remove_ns = re.compile(r"\w+::")
+_clean_numbers = re.compile(r"\b(\d+)\w*")
+def beautify_rant_name(c):
+    n = c.name
+    n = re.sub(r"\(.+?\)", "", n)
+    n = re.sub(_remove_ns, "", n)
+    n = re.sub(_clean_numbers, "\g<1>", n)
+    n = re.sub(r"\s+", "", n) # remove spaces
+    n = re.sub(r"[<>,]+", "_", n) # <> => _
+    n = re.sub(r"integral_constant_[^_]*_", "", n)
+    n = re.sub(r"-", "n", n)
+    c.rename(n[:-1])

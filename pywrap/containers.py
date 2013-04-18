@@ -1,6 +1,6 @@
 import collections, re
 
-import classes
+import classes, namespaces
 from matchers import match_std_container_t, namespace_contains_matcher_t
 from pygccxml.declarations import templates
 from pyplusplus.module_builder import call_policies
@@ -13,6 +13,9 @@ def beautify_stl_container_names(ns):
 
 def extend_std_containers(ns):
     STL_Containers.expose(ns)
+
+    for c in namespaces.getRants(ns):
+        classes.beautify_rant_name(c)
 
 def get_stl_containers(ns, *names):
     return STL_Containers.find(ns, names)
@@ -68,7 +71,7 @@ class STLExposerBase(object):
 
     containers = ["pair"]
 
-    re_match_number = re.compile(r'(\d+)\w+')
+    re_match_number = re.compile(r'(\(.*?\))?(\d+)\w*')
 
     builtins = {
             "bool"           : "Bool",
@@ -78,7 +81,7 @@ class STLExposerBase(object):
             "int"            : "Int",
             "long"           : "Long",
             "short"          : "Short",
-            "unsigned char"  : "Char",
+            "unsigned char"  : "UChar",
             "unsigend int"   : "UInt",
             "unsigned short" : "UShort",
             "unsigned long"  : "ULong",
@@ -114,7 +117,7 @@ class STLExposerBase(object):
         for arg in templates.args(c.name):
             number = cls.re_match_number.match(arg)
             if number:
-                name.append( number.group(1) )
+                name.append( number.group(2) )
             elif arg in cls.builtins:
                 name.append( cls.builtins[arg] )
             else:

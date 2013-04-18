@@ -66,7 +66,7 @@ def build(bld):
         target          = "pywrap",
 #        source          = bld.path.ant_glob("pywrap/**/*.py"),
         use             = [ 'pyublas_inc', 'BOOST_PYWRAP' ],
-        export_includes = [ bld.path.find_node("src").abspath() ],
+        export_includes = [ 'src' ],
 #        install_path    = 'lib/pwrap',
     )
 

@@ -154,3 +154,11 @@ def expose_typedefs(mb, ns, recurse=True, cross_namespace_aliases=True):
         else:
             to_log += 'ignored'
         log.info(to_log)
+
+_rant_filter_re = re.compile(r"integral_range<[^>]*>")
+def getRants(ns):
+    try:
+        f = custom_matcher_t(lambda decl: _rant_filter_re.match(decl.name))
+        return [c for c in ns.classes(f)]
+    except RuntimeError:
+        return []
