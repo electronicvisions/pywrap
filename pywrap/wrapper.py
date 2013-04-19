@@ -28,6 +28,8 @@ class Wrapper(object):
             define_symbols=self.args.defines,
             indexing_suite_version=2)
 
+        self.number_of_files = -1
+
         try:
             os.makedirs(self.args.output_dir)
         except OSError:
@@ -50,7 +52,18 @@ class Wrapper(object):
             return lambda *v, **k: None
 
     def module_name(self):
+        """ get module name"""
         return self.args.module_name
+
+    def set_number_of_files(self, number_of_files):
+        """ set number of generated file
+
+        number_of_files means:
+        -1 : one file per class
+        0  :   all in one file
+        >0 : number of files to generate
+        """
+        self.number_of_files = number_of_files
 
     def finish(self):
         # Py++ will generate next code: def( ..., function type( function ref )
@@ -70,6 +83,11 @@ class Wrapper(object):
             self.mb.code_creator.user_defined_directories.append(d)
 
         # Write code to files.
-        self.mb.split_module(self.args.output_dir)
+        if self.number_of_files < 0:
+            self.mb.split_module(self.args.output_dir)
+        elif self.number_of_files == 0:
+            self.mb.write_module(os.path.join(self.args.output_dir, self.module_name() + ".cpp"))
+        else:
+            self.mb.balanced_split_module(self.args.output_dir, self.number_of_files)
 
 # vim: ts=4 sts=4 sw=4 et
