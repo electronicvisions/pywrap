@@ -37,7 +37,7 @@ class Wrapper(object):
             f.writelines([
                 '#!/bin/sh\n',
                 'export PYTHONPATH="{}"\n'.format(os.pathsep.join(sys.path).replace('"', '\\"').strip(':')),
-                'ipython -- {}\n'.format(' '.join(sys.argv))
+                'ipython $@ -- {}\n'.format(' \\\n'.join(sys.argv))
             ])
 
     @property
