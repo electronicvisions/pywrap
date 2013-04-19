@@ -2,6 +2,10 @@
 
 #include <ostream>
 
+#if !(__cplusplus >= 201103L)
+#define RANT_CONSTEXPR
+#endif
+
 #if defined(PYPLUSPLUS)
 #include <boost/integer_traits.hpp>
 namespace std {
@@ -59,8 +63,6 @@ private:
 #define ADD_RANT_SERIALIZER(NAME)
 
 #else
-
-#define RANT_CONEXPR
 
 #include <rant/rant.h>
 #include <boost/serialization/rant.hpp>
