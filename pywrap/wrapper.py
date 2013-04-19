@@ -2,6 +2,7 @@ import os
 import sys
 import argparse
 import logging
+import tempfile
 
 import pyplusplus
 
@@ -26,6 +27,18 @@ class Wrapper(object):
             include_paths=self.args.includes,
             define_symbols=self.args.defines,
             indexing_suite_version=2)
+
+        try:
+            os.makedirs(self.args.output_dir)
+        except OSError:
+            pass
+
+        with open(os.path.join(self.args.output_dir, 'generate.sh'), 'w') as f:
+            f.writelines([
+                '#!/bin/sh\n',
+                'export PYTHONPATH="{}"\n'.format(os.pathsep.join(sys.path).replace('"', '\\"').strip(':')),
+                'ipython $@ -- {}\n'.format(' \\\n'.join(sys.argv))
+            ])
 
     @property
     def ishell(self):

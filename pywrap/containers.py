@@ -60,6 +60,7 @@ class STL_Containers(object):
             exposer.expose(c)
             exposer.rename(c)
 
+    @classmethod
     def rename(cls, ns):
         for c in cls.findall(ns):
             container = templates.name(c.name)
@@ -82,7 +83,7 @@ class STLExposerBase(object):
             "long"           : "Long",
             "short"          : "Short",
             "unsigned char"  : "UChar",
-            "unsigend int"   : "UInt",
+            "unsigned int"   : "UInt",
             "unsigned short" : "UShort",
             "unsigned long"  : "ULong",
             }
