@@ -74,6 +74,8 @@ class STLExposerBase(object):
 
     re_match_number = re.compile(r'(\(.*?\))?(\d+)\w*')
 
+    # TODO we could use pygccxml.declarations.cpptypes.FUNDAMENTAL_TYPES here?
+    # but be careful with 'short unsigned int'
     builtins = {
             "bool"           : "Bool",
             "char"           : "Char",

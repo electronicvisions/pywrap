@@ -1,6 +1,7 @@
 """utility functions to be applied on classes"""
 
 import collections, re
+import matchers
 from matchers import access_type_matcher_t, declaration_not_found_t
 
 def get_all_bases(cls, only_public = True ):
@@ -10,12 +11,30 @@ def get_all_bases(cls, only_public = True ):
     else:
         return [ x.related_class for x in cls.recursive_bases ]
 
-def get_casting_operators(cls, *types):
-    cls = get_all_bases(cls) + [cls]
+
+def add_int_value_operator(c, allow_empty=False):
+    match_int   = matchers.match_casting_int_operator_t()
+    reg_code = ('def(int_(bp::self))', 'def(long_(bp::self))')
+    _add_value_operator(c, match_int, reg_code, allow_empty)
+
+def add_float_value_operator(c, allow_empty=False):
+    match_float = matchers.match_casting_float_operator_t()
+    reg_code = ('def(float_(bp::self))')
+    _add_value_operator(c, match_int, reg_code, allow_empty)
+
+def _add_value_operator(c, matcher, reg_code, allow_empty):
+    cls = [c] + get_all_bases(c)
     ops = []
     for c in cls:
         tmp = c.casting_operators(access_type_matcher_t('public'), allow_empty = True)
         ops.extend(tmp.to_list())
+    for op in ops:
+        if matcher(op):
+            for code in reg_code:
+                c.add_registration_code(code)
+                return
+    if not allow_empty:
+        raise RuntimeError("Could not find value operator for " + c.name)
 
 
 _numpy_construtor_decl_code = '#include "pywrap/create_constructor.hpp"'
