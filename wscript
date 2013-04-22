@@ -83,7 +83,7 @@ def build(bld):
     bld(
         tests           = ['src/test/pywraptest.py'],
         features        = 'pytest',
-        use             = 'pywraptestmodule',
+        use             = 'pywraptestmodule pyublas',
         install_path    = join('bin', 'tests'),
     )
 
