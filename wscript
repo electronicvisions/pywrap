@@ -48,6 +48,7 @@ def configure(cfg):
         uselib_store='BOOST_PYWRAP')
 
     cfg.pypp_add_module_path(cfg.path.abspath())
+    cfg.pypp_add_module_dependency('pywrap')
     cfg.pypp_add_use('pywrap', 'BOOST_PYWRAP')
 
 
