@@ -2,11 +2,11 @@ import collections, re
 
 import classes, namespaces
 from matchers import match_std_container_t, namespace_contains_matcher_t
-from pygccxml.declarations import templates
+from pygccxml.declarations import algorithm, templates
 from pyplusplus.module_builder import call_policies
 from pyplusplus.messages import warnings_
 from pyplusplus.decl_wrappers.enumeration_wrapper import enumeration_t
-
+from pyplusplus.decl_wrappers.typedef_wrapper import typedef_t
 
 def beautify_stl_container_names(ns):
     STL_Containers.rename(ns)
@@ -126,7 +126,6 @@ class STLExposerBase(object):
         def make_alias(name):
             def alias():
                 tmp = [n() if callable(n) else n for n in name]
-                print name, tmp
                 return "_".join([n for n in tmp if n])
             return alias
 
@@ -139,16 +138,29 @@ class STLExposerBase(object):
                 name.append( cls.builtins[arg] )
             else:
                 # Enumerations are exposed as class_t and enumeration_t, don't use the 2nd
-                decls = [d for d in c.top_parent.decls('::' + arg) if not isinstance(d, (enumeration_t))]
-                assert len(decls) == 1
-                arg_decl = decls[0]
-                # Put in a closure to get track if the name of class is changed later
-                name.append( decl_alias(arg_decl) )
+                decls_f = lambda d: not (isinstance(d, (enumeration_t)) or isinstance(d, (typedef_t)))
+                decls = [d for d in c.top_parent.decls('::' + arg) if decls_f(d)]
+                if len(decls) == 0:
+                    name.append(algorithm.create_valid_name(c.partial_name))
+                elif len(decls) == 1:
+                    # Put in a closure to get track if the name of class is changed later
+                    name.append( decl_alias(decls[0]) )
+                else:
+                    print decls
+                    raise RuntimeError("Something weired happend when renaming: " + c.decl_string)
+
         c.rename(make_alias(name))
 
     @classmethod
     def expose(cls, c):
         cls.create_alias(c)
+
+class StdStringExposer(STLExposerBase):
+    containers = ["string"]
+
+    @classmethod
+    def create_alias(cls, c):
+        c.rename("String")
 
 class Sequence_Exposer(STLExposerBase):
     containers = ["array", "vector"]

@@ -25,10 +25,7 @@ def build(bld):
                 '-Wno-c++11-compat',
                 '-ggdb3',
                 ],
-            "defines" : [],
-            }
-
-    bld(
+            "defines" : []testpypp    bld(
             target         = "pywrap_example",
             module         = "pywrap_example",
             features       = 'cxx pypp cxxshlib pyext pyembed',

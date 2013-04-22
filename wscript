@@ -61,6 +61,7 @@ def build(bld):
              '-fPIC', ],
         "linkflags" :
             ['-Wl,-z,defs'],
+        "install_path" : 'lib',
     }
 
     bld(
@@ -75,8 +76,18 @@ def build(bld):
         target          = 'pywraptestmodule',
         features        = 'cxx cxxshlib pyext pyembed',
         source          = 'src/test/pywraptest.cpp',
-        install_path    = 'lib',
         use             = [ 'pywrap' ],
+        **test_flags
+    )
+
+    bld(
+        target         = "pywraptestpypp",
+        module         = "pywraptestpypp",
+        features       = 'cxx pypp cxxshlib pyext pyembed',
+        gen_defines    = 'PYPLUSPLUS __STRICT_ANSI__',
+        script         = 'src/test/pypp/generate.py',
+        headers        = bld.path.ant_glob("src/test/pypp/*.hpp"),
+        source         = bld.path.ant_glob("src/test/pypp/*.cpp"),
         **test_flags
     )
 
