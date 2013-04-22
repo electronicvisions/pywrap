@@ -73,6 +73,8 @@ class STLExposerBase(object):
     containers = ["pair"]
 
     re_match_number = re.compile(r'(\(.*?\))?(\d+)\w*')
+    ignore_in_alias_tag = "STLExposer_IGNORE_IN_ALIAS"
+
 
     # TODO we could use pygccxml.declarations.cpptypes.FUNDAMENTAL_TYPES here?
     # but be careful with 'short unsigned int'
@@ -114,7 +116,19 @@ class STLExposerBase(object):
     @classmethod
     def create_alias(cls, c):
         def decl_alias(decl):
-            return lambda: decl.alias
+            def alias():
+                if hasattr(decl, cls.ignore_in_alias_tag):
+                    return ""
+                else:
+                    return decl.alias
+            return alias
+
+        def make_alias(name):
+            def alias():
+                tmp = [n() if callable(n) else n for n in name]
+                print name, tmp
+                return "_".join([n for n in tmp if n])
+            return alias
 
         name = [ templates.name(c.name).capitalize() ]
         for arg in templates.args(c.name):
@@ -130,7 +144,7 @@ class STLExposerBase(object):
                 arg_decl = decls[0]
                 # Put in a closure to get track if the name of class is changed later
                 name.append( decl_alias(arg_decl) )
-        c.rename( lambda: "_".join([ n() if callable(n) else n for n in name]) )
+        c.rename(make_alias(name))
 
     @classmethod
     def expose(cls, c):
@@ -146,6 +160,13 @@ class Sequence_Exposer(STLExposerBase):
         c.disable_warnings(warnings_.W1008)
         for f in c.mem_funs():
             f.disable_warnings(warnings_.W1008, warnings_.W1050)
+
+class Not_Exposer(STLExposerBase):
+    containers = ["allocator"]
+
+    @classmethod
+    def create_alias(cls, c):
+        setattr(c, cls.ignore_in_alias_tag, True)
 
 class Bitset_Exposer(Sequence_Exposer):
     containers = ["bitset"]
