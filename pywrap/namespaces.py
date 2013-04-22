@@ -84,6 +84,8 @@ def include_default_copy_constructors(ns):
 
 def get_deps(ns, matcher = lambda : True, recurse=True):
     decls = set()
+    if not hasattr(ns, "declarations"):
+		return decls
     for decl in ns.declarations:
         if recurse or not isinstance(decl, namespace_t):
             for deps in  decl.i_depend_on_them():
