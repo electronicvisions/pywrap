@@ -87,7 +87,7 @@ def get_deps(ns, matcher = lambda : True, recurse=True):
     if not hasattr(ns, "declarations"):
 		return decls
     for decl in ns.declarations:
-        if recurse or not isinstance(decl, namespace_t):
+        if not decl.ignore and recurse or not isinstance(decl, namespace_t):
             for deps in  decl.i_depend_on_them():
                 d = [ decl for decl in deps.find_out_depend_on_it_declarations() if matcher(decl) ]
                 decls.update(d)
