@@ -156,11 +156,14 @@ class STLExposerBase(object):
         cls.create_alias(c)
 
 class StdStringExposer(STLExposerBase):
-    containers = ["string"]
+    containers = ["basic_string"] #std::string
 
     @classmethod
     def create_alias(cls, c):
-        c.rename("String")
+        if c.alias == "string":
+            c.rename("String")
+        elif c.alias == "wstring":
+            c.rename("WString")
 
 class Sequence_Exposer(STLExposerBase):
     containers = ["array", "vector"]
