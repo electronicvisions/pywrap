@@ -3,6 +3,7 @@ from pywrap.wrapper import Wrapper
 from pywrap import containers, namespaces, matchers, classes
 
 wrap = Wrapper()
+wrap.set_number_of_files(0)
 module_name = wrap.module_name()
 mb = wrap.mb
 
