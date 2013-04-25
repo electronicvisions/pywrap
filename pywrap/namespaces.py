@@ -69,11 +69,12 @@ def exclude_by_regex(ns, groups, pattern):
 
     exclude(ns, groups, [member_filter], True)
 
-def extend_array_operators(ns, recurse = False):
+def extend_array_operators(ns, recurse=True):
     """Expose the operator[] of all matching classes with __setitem__ support, 
     when possible
     """
     for c in ns.classes(namespace_contains_matcher_t(ns.name, recurse), allow_empty=True):
+        print "classes.add_array_operators(", c.decl_string, ")"
         classes.add_array_operators(c)
 
 def include_default_copy_constructors(ns):
