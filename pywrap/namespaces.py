@@ -74,7 +74,6 @@ def extend_array_operators(ns, recurse=True):
     when possible
     """
     for c in ns.classes(namespace_contains_matcher_t(ns.name, recurse), allow_empty=True):
-        print "classes.add_array_operators(", c.decl_string, ")"
         classes.add_array_operators(c)
 
 def include_default_copy_constructors(ns):
