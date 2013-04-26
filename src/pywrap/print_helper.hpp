@@ -5,6 +5,7 @@
 #include <boost/python.hpp>
 
 namespace pywrap {
+	namespace bp = boost::python;
 
 	template <std::size_t N>
 	std::ostream & operator<<(std::ostream & out, const std::bitset<N>& obj)

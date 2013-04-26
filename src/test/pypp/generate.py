@@ -11,6 +11,7 @@ containers.extend_std_containers(mb)
 namespaces.include_default_copy_constructors(mb)
 
 mb.decl("get_string_vector").include()
+mb.namespace("test").include()
 
 # expose only public interfaces
 namespaces.exclude_by_access_type(mb, ['variables', 'calldefs', 'classes'], 'private')

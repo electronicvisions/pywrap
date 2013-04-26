@@ -58,5 +58,12 @@ class Test_Exposer_Utils(unittest.TestCase):
         for a, b in zip(v, np.arange(10, dtype=np.ushort)):
             self.assertEqual(a, b)
 
+    def test_typdefs(self):
+        import pywraptestpypp as t
+        self.assertIs(t.String1, t.Vector_String)
+        self.assertIs(t.String1, t.String2)
+        self.assertIs(t.String1, t.String3)
+        self.assertIs(t.String1, t.String4)
+
 if __name__ == '__main__':
     unittest.main()
