@@ -37,17 +37,17 @@ def _add_value_operator(c, matcher, reg_code, allow_empty):
         raise RuntimeError("Could not find value operator for " + c.name)
 
 
-_numpy_construtor_decl_code = '#include "pywrap/create_constructor.hpp"'
+_numpy_construtor_includes = ('pywrap/create_constructor.hpp', )
 _numpy_construtor_reg_code = (
         'def( "__init__", boost::python::make_constructor(&::pywrap::create_constructor< {} >::construct))',
 )
 
 def add_numpy_construtor(c):
-    c.add_declaration_code(_numpy_construtor_decl_code)
+    c.include_files.extend(_numpy_construtor_includes)
     for code in _numpy_construtor_reg_code:
         c.add_registration_code(code.format(c.decl_string))
 
-_array_operator_include  = '#include "pywrap/expose_array_operator.hpp"'
+_array_operator_includes  = ("pywrap/expose_array_operator.hpp", )
 _array_operator_code = 'def(::pywrap::expose_array_operator( (%(type)s)(%(op)s), %(policy)s ))'
 
 def add_array_operators(c, policy = None, value_type = None):
@@ -74,7 +74,7 @@ def add_array_operators(c, policy = None, value_type = None):
                 }
         if value_type is not None:
             subs["policy"] += ", " + value_type
-        c.add_declaration_code(_array_operator_include)
+        c.include_files.extend(_array_operator_includes)
         c.add_registration_code( _array_operator_code % subs)
 
 
