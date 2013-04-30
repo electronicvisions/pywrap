@@ -49,8 +49,8 @@ class NamespaceUtil(object):
         self.add_decl(decl)
         for vname, value in decl.values:
             ns, name = self.gen_alias(decl, vname)
-            decl.value_aliases[vname] = name
-            self.names[ns].append((vname, self.PseudoDecl(name, decl)))
+            #decl.value_aliases[vname] = name
+            self.names[ns].append((vname, self.PseudoDecl(vname, decl)))
 
     def add_namespace(self, ns):
         for cls in ns.classes(allow_empty=True):
