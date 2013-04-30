@@ -19,5 +19,7 @@ namespace test
 	typedef const std::vector<std::string> & StringVectorConstRef;
 	typedef std::vector<std::string> &       StringVectorRef;
 	typedef std::vector<std::string> *       StringVectorPtr;
+
+	typedef int int_type;
 }
 

@@ -65,5 +65,7 @@ class Test_Exposer_Utils(unittest.TestCase):
         self.assertIs(t.String1, t.String3)
         self.assertIs(t.String1, t.String4)
 
+        self.assertIs(t.int_type, int)
+
 if __name__ == '__main__':
     unittest.main()

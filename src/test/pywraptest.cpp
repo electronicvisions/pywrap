@@ -27,6 +27,18 @@ private:
 	Y data[30];
 };
 
+struct A
+{
+	int a() { return 0; }
+	int z() { return 0; }
+};
+
+struct B : A
+{
+	int b() { return 1; }
+	int z() { return 1; }
+};
+
 std::vector<double> makeDoubleVector()
 {
 	return std::vector<double>({0,1,2,3,4,5,6,7,8,9});
@@ -131,6 +143,17 @@ BOOST_PYTHON_MODULE(pywraptestmodule)
 
 	def("makeDoubleVector", &makeDoubleVector, ReturnNumpyPolicy());
 	def("makeUShortVector", &makeUShortVector, ReturnNumpyPolicy());
+
+
+	class_<A>("A")
+		.def("a", &A::a)
+		.def("z", &A::z)
+	;
+
+	class_<B, bases<A> >("B")
+		.def("b", &B::b)
+		.def("z", &B::z)
+	;
 }
 
 
