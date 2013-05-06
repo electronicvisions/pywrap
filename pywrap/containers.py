@@ -193,6 +193,8 @@ class Bitset_Exposer(Sequence_Exposer):
         super(Bitset_Exposer, cls).expose(c)
         c.mem_opers().include()
         c.allow_implicit_conversion = True
+        c.include_files.append('pywrap/print_helper.hpp')
+        c.add_registration_code('def(pywrap::PrintNice())')
         for f in c.member_functions(name = lambda x: x.name in ("set", "reset", "flip") ):
             f.call_policies = call_policies.return_self()
         classes.add_array_operators(c, "bp::default_call_policies()", "bool()")
