@@ -7,11 +7,10 @@ try:
 except ImportError:
     from gtest import summary
     assert os.getenv('SYMAP2IC_PATH'), "$SYMAP2IC_PATH not set"
-    comp_dir = os.path.join(
-        os.getenv('SYMAP2IC_PATH'),
-        'components')
+    comp_dir = os.path.join(os.getenv('SYMAP2IC_PATH'), 'components')
 
     dependencies = [
+            os.path.join(comp_dir, 'pyublas'),
     ]
     recurse = lambda ctx: map(lambda dep: ctx.recurse(dep), dependencies)
 
