@@ -5,6 +5,7 @@
 #define constexpr
 #define explicit
 #define static_assert(X, Y)
+#define nullptr NULL
 #define PYPP_TYPED_ENUM(name, type) enum name
 #define PYPP_TYPENAME
 #define PYPP_EXPLICIT_CAST
