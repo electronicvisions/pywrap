@@ -18,3 +18,9 @@
 #define PYPP_INSTANTIATE(TYPE)
 #define PYPP_DEFAULT(x) x = default
 #endif
+
+#if __cplusplus >= 201103L
+#define PYPP_FINAL final
+#else
+#define PYPP_FINAL
+#endif
