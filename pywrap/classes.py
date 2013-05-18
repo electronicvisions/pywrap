@@ -3,6 +3,8 @@
 import collections, re
 import matchers
 from matchers import access_type_matcher_t, declaration_not_found_t
+import logging
+log = logging.getLogger('pywrap.classes')
 
 def get_all_bases(cls, only_public = True ):
     """Returns recursivly all (public) bases of a class"""
@@ -11,6 +13,36 @@ def get_all_bases(cls, only_public = True ):
     else:
         return [ x.related_class for x in cls.recursive_bases ]
 
+def add_comparison_operators(c, disable_all=False):
+    c.include_files.append('pywrap/operator_helper.hpp')
+
+    if c.equality_comparable and not disable_all:
+        log.info("{} has ==, adding != operator".format(c))
+        c.add_registration_code('def(bp::self == bp::self)')
+        c.add_registration_code('def("__ne__", &pywrap::comparator_ne)')
+
+        if c.less_than_comparable:
+            log.info("{} has <, adding <=, >, >= operators".format(c))
+            c.add_registration_code('def(bp::self < bp::self)')
+            c.add_registration_code('def("__ge__", &pywrap::comparator_ge)')
+            c.add_registration_code('def("__gt__", &pywrap::comparator_gt)')
+            c.add_registration_code('def("__le__", &pywrap::comparator_le)')
+            return
+
+    else:
+        if c.less_than_comparable:
+            raise RuntimeError(
+                "Class has operator< but not operator==: {}".format(c))
+
+        log.info("{} does not have == and != operators".format(c))
+        c.add_registration_code('def("__eq__", &pywrap::comparator_not_implemented)')
+        c.add_registration_code('def("__ne__", &pywrap::comparator_not_implemented)')
+
+    log.info("{} does not have <, <=, >, >= operators".format(c))
+    c.add_registration_code('def("__lt__", &pywrap::comparator_not_implemented)')
+    c.add_registration_code('def("__le__", &pywrap::comparator_not_implemented)')
+    c.add_registration_code('def("__ge__", &pywrap::comparator_not_implemented)')
+    c.add_registration_code('def("__gt__", &pywrap::comparator_not_implemented)')
 
 def add_int_value_operator(c, allow_empty=False):
     match_int   = matchers.match_casting_int_operator_t()

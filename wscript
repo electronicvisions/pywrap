@@ -70,10 +70,19 @@ def build(bld):
 
     bld(
         target          = "pywrap",
-#        source          = bld.path.ant_glob("pywrap/**/*.py"),
+        features        = 'cxx cxxshlib pyembed',
+        source          = bld.path.ant_glob('src/pywrap/*.cpp'),
         use             = [ 'pywrap_inc', 'pyublas_inc', 'BOOST_PYWRAP' ],
-#        install_path    = 'lib/pwrap',
-    )
+        install_path    = 'lib',
+        cxxflags=[
+            '-Wall',
+            '-Wextra',
+            '-fPIC',
+            '-std=c++0x',
+        ],
+        linkflags=[
+            '-Wl,-z,defs'
+        ])
 
     bld(
         target          = 'pywraptestmodule',
