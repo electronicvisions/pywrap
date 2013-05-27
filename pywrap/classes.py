@@ -139,3 +139,18 @@ def beautify_rant_name(c):
     n = re.sub(r"integral_constant_[^_]*_", "", n)
     n = re.sub(r"-", "n", n)
     c.rename(n[:-1])
+
+
+def expose_std_hash(c):
+    """Links Python hashing operator to (std::(tr1::))hash::operator()"""
+    stdhash = 'std::tr1::hash'
+    s = 'hash< %s >' % c.partial_decl_string
+    # TODO: add allow_empty option and search for std::tr1::hash < CLASS >::operator()
+    c.add_registration_code(
+        'def("__hash__", \
+             bp::make_function( \
+                 []({0} t){{ \
+                     return {1}< {0} >()(t); \
+                 }}, \
+                 bp::default_call_policies(), \
+                 boost::mpl::vector<size_t, {0} >()))'.format(c.partial_decl_string, stdhash))
