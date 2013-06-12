@@ -2,9 +2,10 @@ import collections, re
 
 import classes, namespaces
 from matchers import match_std_container_t, namespace_contains_matcher_t
-from pygccxml.declarations import algorithm, templates
+from pygccxml.declarations import templates
 from pyplusplus.module_builder import call_policies
 from pyplusplus.messages import warnings_
+from pyplusplus.decl_wrappers import algorithm
 from pyplusplus.decl_wrappers.enumeration_wrapper import enumeration_t
 from pyplusplus.decl_wrappers.typedef_wrapper import typedef_t
 
