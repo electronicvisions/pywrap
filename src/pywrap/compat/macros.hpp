@@ -10,6 +10,7 @@
 #define PYPP_EXPLICIT_CAST
 #define PYPP_INSTANTIATE(TYPE) inline void _instantiate(TYPE& a) { static_cast<void>(a); }
 #define PYPP_DEFAULT(x)
+#define PYPP_DELETE(x)
 #define PYPP_UNI_INIT(x) ( x )
 #else
 #define PYPP_CONSTEXPR constexpr
@@ -18,6 +19,7 @@
 #define PYPP_EXPLICIT_CAST explicit
 #define PYPP_INSTANTIATE(TYPE)
 #define PYPP_DEFAULT(x) x = default
+#define PYPP_DELETE(x) x = delete
 #define PYPP_UNI_INIT(x) { x }
 #endif
 

@@ -154,3 +154,20 @@ def expose_std_hash(c):
                  }}, \
                  bp::default_call_policies(), \
                  boost::mpl::vector<size_t, {0} >()))'.format(c.partial_decl_string, stdhash))
+
+
+def add_context_manager(c):
+    """Adds context manager stuff (__enter__(self) and __exit__(self, exc_type,
+    exc_value, traceback)) to wrapped class"""
+    # __enter__ just returns *the* referenced object - lifetime bound to t == itself
+    c.add_registration_code(
+        'def("__enter__", bp::make_function( []({0} & t) -> {0} & {{ return t; }}, \
+             bp::return_internal_reference<>(), \
+             boost::mpl::vector< {0} &, {0} & >()))'.format(c.partial_decl_string))
+    # check if python exception occured in context and just pass it on
+    c.add_registration_code(
+        'def("__exit__", bp::make_function( []({0} const &, bp::object a, bp::object, bp::object) {{ \
+                return false; \
+             }}, \
+             bp::default_call_policies(), \
+             boost::mpl::vector< bool, {0} const &, bp::object, bp::object, bp::object >()))'.format(c.partial_decl_string))
