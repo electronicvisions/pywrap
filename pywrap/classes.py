@@ -142,10 +142,10 @@ def beautify_rant_name(c):
 
 
 def expose_std_hash(c):
-    """Links Python hashing operator to (std::(tr1::))hash::operator()"""
-    stdhash = 'std::tr1::hash'
+    """Links Python hashing operator to std::hash::operator()"""
+    stdhash = 'std::hash'
     s = 'hash< %s >' % c.partial_decl_string
-    # TODO: add allow_empty option and search for std::tr1::hash < CLASS >::operator()
+    # TODO: add allow_empty option and search for std::hash < CLASS >::operator()
     c.add_registration_code(
         'def("__hash__", \
              bp::make_function( \
