@@ -83,9 +83,11 @@ _array_operator_includes  = ("pywrap/expose_array_operator.hpp", )
 _array_operator_code = 'def(::pywrap::expose_array_operator( (%(type)s)(%(op)s), %(policy)s ))'
 
 def add_array_operators(c, policy = None, value_type = None):
-    ops = c.member_operators("operator[]", allow_empty=True).to_list()
     by_arguments = collections.defaultdict(list)
-    for op in ops:
+    for op in c.member_operators("operator[]", allow_empty=True):
+        if op.parent != c:
+            continue
+
         op.exclude()
         arg = op.argument_types[0]
         by_arguments[arg.decl_string].append(op)
