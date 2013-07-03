@@ -6,7 +6,7 @@
 #define static_assert(...)
 #define nullptr NULL
 #define PYPP_TYPED_ENUM(name, type) enum name
-#define PYPP_TYPENAME
+#define PYPP_TYPENAME /* this is only due to gcc4.4 ignoring the c++ std */
 #define PYPP_EXPLICIT_CAST
 #define PYPP_INSTANTIATE(TYPE) inline void _instantiate(TYPE& a) { static_cast<void>(a); }
 #define PYPP_DEFAULT(x) x {}
