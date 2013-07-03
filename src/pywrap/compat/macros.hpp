@@ -12,6 +12,7 @@
 #define PYPP_DEFAULT(x) x {}
 #define PYPP_DELETE(x)
 #define PYPP_UNI_INIT(x) ( x )
+#define PYPP_EXCLUDE(x)
 #else
 #define PYPP_CONSTEXPR constexpr
 #define PYPP_TYPED_ENUM(name, type) enum name : type
@@ -21,6 +22,7 @@
 #define PYPP_DEFAULT(x) x = default
 #define PYPP_DELETE(x) x = delete
 #define PYPP_UNI_INIT(x) { x }
+#define PYPP_EXCLUDE(x) x
 #endif
 
 #if __cplusplus >= 201103L
