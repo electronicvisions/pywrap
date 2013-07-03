@@ -3,7 +3,7 @@
 #ifdef PYPLUSPLUS
 #define PYPP_CONSTEXPR const
 #define constexpr
-#define static_assert(X, Y)
+#define static_assert(...)
 #define nullptr NULL
 #define PYPP_TYPED_ENUM(name, type) enum name
 #define PYPP_TYPENAME
