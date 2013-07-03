@@ -9,7 +9,7 @@
 #define PYPP_TYPENAME
 #define PYPP_EXPLICIT_CAST
 #define PYPP_INSTANTIATE(TYPE) inline void _instantiate(TYPE& a) { static_cast<void>(a); }
-#define PYPP_DEFAULT(x)
+#define PYPP_DEFAULT(x) x {}
 #define PYPP_DELETE(x)
 #define PYPP_UNI_INIT(x) ( x )
 #else
