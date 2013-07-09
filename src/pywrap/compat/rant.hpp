@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ostream>
+#include <boost/utility/enable_if.hpp>
 
 #if !(__cplusplus >= 201103L)
 #define RANT_CONSTEXPR
