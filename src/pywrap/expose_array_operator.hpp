@@ -22,7 +22,7 @@ namespace detail
 	};
 
 	template<>
-	struct auto_policy_type<true, false, true> {
+	struct auto_policy_type<true, true, false> {
 		typedef boost::python::return_value_policy<boost::python::copy_non_const_reference> type;
 	};
 
@@ -34,7 +34,9 @@ namespace detail
 	template <typename ValueType, typename Policy>
 	struct array_operator_get_policy
 	{
-		static const bool is_intergral = std::is_integral< typename std::decay<ValueType>::type >::value;
+		static const bool is_intergral =
+			std::is_integral<typename std::decay<ValueType>::type>::value
+			 || std::is_enum<typename std::decay<ValueType>::type>::value;
 		static const bool is_ref =  std::is_reference< ValueType >::value;
 		static const bool is_const = std::is_const<typename std::remove_reference<ValueType>::type>::value;
 
@@ -52,7 +54,8 @@ namespace detail
 			!std::is_same<ForcedValueType, array_operator_auto_value_type>::value;
 
 		typedef typename std::conditional<
-			std::is_integral< typename std::decay<ReturnType>::type >::value,
+			std::is_integral< typename std::decay<ReturnType>::type >::value
+			 || std::is_enum< typename std::decay<ReturnType>::type >::value,
 			typename std::decay<ReturnType>::type,
 			ReturnType
 				>::type deduced_value_type;
@@ -122,7 +125,7 @@ namespace detail
 			auto setitem_f = std::bind(&setitem, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, op);
 			auto f = boost::python::make_function(setitem_f,
 					boost::python::default_call_policies(),
-					boost::mpl::vector<void, class_type, key_type, value_type>());
+					boost::mpl::vector<void, class_type&, key_type, value_type>());
 			c.def("__setitem__", f);
 		}
 
@@ -158,7 +161,7 @@ public:
 		auto getitem_f = std::bind(&getitem, std::placeholders::_1, std::placeholders::_2, operator_fun);
 		auto boost_f = boost::python::make_function(getitem_f,
 				policy,
-				boost::mpl::vector<value_type, class_type, key_type>());
+				boost::mpl::vector<value_type, class_type&, key_type>());
         c.def("__getitem__", boost_f);
 		detail::make_setitem<classT, Traits, Traits::make_setitem>::def(c, operator_fun);
     }
