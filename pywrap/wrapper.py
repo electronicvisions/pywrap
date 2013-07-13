@@ -42,6 +42,9 @@ class Wrapper(object):
                 'ipython $@ -- {}\n'.format(' \\\n'.join(sys.argv))
             ])
 
+        for cls in self.mb.classes():
+            cls.redefine_operators = True
+
     @property
     def ishell(self):
         from IPython.frontend.terminal.embed import InteractiveShellEmbed
