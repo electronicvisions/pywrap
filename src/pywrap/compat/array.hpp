@@ -269,5 +269,4 @@ _GLIBCXX_END_NAMESPACE_VERSION
 #endif // _GLIBCXX_ARRAY
 #else
 #include <array>
-#include <boost/serialization/array.h> // our custom serialization header in lib-boost-patches
 #endif // PYPLUSPLUS
