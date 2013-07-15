@@ -58,7 +58,7 @@ def add_numpy_construtor(c):
         c.add_registration_code(code.format(c.decl_string))
 
 _array_operator_includes  = ("pywrap/expose_array_operator.hpp", )
-_array_operator_code = 'def(::pywrap::expose_array_operator( (%(type)s)(%(op)s), %(policy)s ))'
+_array_operator_code = 'def(::pywrap::expose_array_operator( (%(type)s)(%(op)s)%(policy)s ))'
 
 def add_array_operators(c, policy = None, value_type = None):
     by_arguments = collections.defaultdict(list)
@@ -81,7 +81,7 @@ def add_array_operators(c, policy = None, value_type = None):
 
         subs = {
                 "type"  : op.decl_string,
-                "policy" : policy if policy else op.call_policies.create(None),
+                "policy" : (", " + policy) if policy else "",
                 "op"     :  "&" + op.parent.decl_string + "::" + op.name,
                 }
         if value_type is not None:

@@ -1,3 +1,4 @@
+#ifdef PYPLUSPLUS
 // <array> -*- C++ -*-
 
 // Copyright (C) 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
@@ -266,3 +267,7 @@ _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace
 
 #endif // _GLIBCXX_ARRAY
+#else
+#include <array>
+#include <boost/serialization/array.h> // our custom serialization header in lib-boost-patches
+#endif // PYPLUSPLUS
