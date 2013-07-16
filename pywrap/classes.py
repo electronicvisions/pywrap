@@ -18,6 +18,13 @@ def get_all_bases(cls, only_public = True ):
 def add_comparison_operators(c, disable_all=False):
     c.include_files.append('pywrap/operator_helper.hpp')
 
+    for op in ('<', '<=', '>', '>=', '==', '!='):
+        try:
+            o = c.member_operator(symbol=op)
+            o.exclude()
+            log.info("exclude operator {}".format(o))
+        except RuntimeError: pass
+
     if c.equality_comparable and not disable_all:
         log.info("{} has ==, adding != operator".format(c))
         c.add_registration_code('def(bp::self == bp::self)')
