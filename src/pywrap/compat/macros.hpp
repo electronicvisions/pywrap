@@ -29,6 +29,8 @@
 
 #if __cplusplus >= 201103L
 #define PYPP_FINAL final
+#define PYPP_OVERRIDE override
 #else
 #define PYPP_FINAL
+#define PYPP_OVERRIDE
 #endif
