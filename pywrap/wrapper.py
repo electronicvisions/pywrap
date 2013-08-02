@@ -8,7 +8,7 @@ import pyplusplus
 
 
 class Wrapper(object):
-    def __init__(self, license='//greetings earthling'):
+    def __init__(self, license='//greetings earthling', cpp_revision=201103):
         self.license = license
 
         logging.basicConfig(level=logging.INFO)
@@ -26,7 +26,9 @@ class Wrapper(object):
             working_directory=os.path.abspath(os.path.curdir),
             include_paths=self.args.includes,
             define_symbols=self.args.defines,
-            indexing_suite_version=2)
+            indexing_suite_version=2,
+            cplusplus_revision=cpp_revision
+            )
 
         self.number_of_files = -1
 
