@@ -1,20 +1,14 @@
 #!/usr/bin/env python
 import os
+
 try:
     from waflib.extras import symwaf2ic
     from waflib.extras.gtest import summary
     recurse = lambda *args: None
 except ImportError:
     from gtest import summary
-    assert os.getenv('SYMAP2IC_PATH'), "$SYMAP2IC_PATH not set"
-    comp_dir = os.path.join(os.getenv('SYMAP2IC_PATH'), 'components')
-
-    dependencies = [
-            os.path.join(comp_dir, 'pyublas'),
-    ]
-    recurse = lambda ctx: map(lambda dep: ctx.recurse(dep), dependencies)
-
-from os.path import join
+    from symwaf2ic import recurse_depends
+    recurse = lambda ctx: recurse_depends(depends, ctx)
 
 def depends(ctx):
     if not ctx.options.disable_bindings:
@@ -130,6 +124,6 @@ def build_pywrap(bld):
         tests           = ['src/test/pywraptest.py'],
         features        = 'pytest',
         use             = 'pywraptestmodule pywraptestpypp pyublas',
-        install_path    = join('bin', 'tests'),
+        install_path    = 'bin/tests',
     )
 
