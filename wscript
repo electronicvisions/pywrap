@@ -17,12 +17,17 @@ except ImportError:
 from os.path import join
 
 def depends(ctx):
-    ctx('pygccxml')
-    ctx('pyplusplus')
-    ctx('pyublas')
+    if not ctx.options.disable_bindings:
+        ctx('pygccxml')
+        ctx('pyplusplus')
+        ctx('pyublas')
 
 
 def options(opt):
+    hopts = opt.add_option_group('Python bindings options')
+    hopts.add_option('--disable-bindings', action='store_true', default=False,
+                   help='Disable the generation and build of python bindings')
+
     recurse(opt)
     opt.load('g++')
     opt.load('python')
@@ -30,8 +35,11 @@ def options(opt):
     opt.load('pypp')
     opt.load('pytest')
 
-
 def configure(cfg):
+    cfg.env.build_python_bindings = not cfg.options.disable_bindings
+    if not cfg.env.build_python_bindings:
+        return
+
     recurse(cfg)
     cfg.load('g++')
     cfg.load('python')
@@ -53,6 +61,21 @@ def configure(cfg):
 
 def build(bld):
     recurse(bld)
+
+    bld(
+        target          = "pywrap_inc",
+        export_includes = [ 'src' ],
+    )
+
+    if bld.env.build_python_bindings:
+        build_pywrap(bld)
+    else:
+        bld(
+            target          = "pywrap",
+            export_includes = [ 'src' ],
+        )
+
+def build_pywrap(bld):
     test_flags = {
         "cxxflags" :
             ['-ggdb3', '-std=c++0x', '-O0',
