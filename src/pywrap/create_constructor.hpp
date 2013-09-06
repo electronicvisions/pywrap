@@ -56,6 +56,21 @@ struct extract_obj< std::vector<T> >
 	}
 };
 
+template<>
+struct extract_obj< std::vector<bool> >
+{
+	static void extract(boost::python::object const & arg, std::vector<bool> & out) {
+		namespace bp = boost::python;
+		out.resize( bp::len(arg) );
+		if( !from_numpy<bool>::extract_vector(arg, out.begin(), out.end()) )
+		{
+			for (size_t ii = 0; ii < out.size(); ii++) {
+				out[ii] = bp::extract<bool>(arg[ii]);
+			}
+		}
+	}
+};
+
 template <typename T, size_t N>
 struct extract_obj< std::array<T, N> >
 {
