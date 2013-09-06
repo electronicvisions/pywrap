@@ -138,9 +138,13 @@ class STLExposerBase(object):
             elif arg in cls.builtins:
                 name.append( cls.builtins[arg] )
             else:
+                print cls, c, arg
                 # Enumerations are exposed as class_t and enumeration_t, don't use the 2nd
-                decls_f = lambda d: not (isinstance(d, (enumeration_t)) or isinstance(d, (typedef_t)))
-                decls = [d for d in c.top_parent.decls('::' + arg) if decls_f(d)]
+                try:
+                    decls_f = lambda d: not (isinstance(d, (enumeration_t)) or isinstance(d, (typedef_t)))
+                    decls = [d for d in c.top_parent.decls('::' + arg) if decls_f(d)]
+                except:
+                    decls = []
                 if len(decls) == 0:
                     name.append(algorithm.create_valid_name(c.partial_name))
                 elif len(decls) == 1:
