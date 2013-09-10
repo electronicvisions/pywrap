@@ -89,10 +89,10 @@ class Wrapper(object):
 
         # Write code to files.
         if self.number_of_files < 0:
-            self.mb.split_module(self.args.output_dir)
+            self.mb.split_module(self.args.output_dir, use_files_sum_repository=True)
         elif self.number_of_files == 0:
             self.mb.write_module(os.path.join(self.args.output_dir, self.module_name() + ".cpp"))
         else:
-            self.mb.balanced_split_module(self.args.output_dir, self.number_of_files)
+            self.mb.balanced_split_module(self.args.output_dir, self.number_of_files, use_files_sum_repository=True)
 
 # vim: ts=4 sts=4 sw=4 et
