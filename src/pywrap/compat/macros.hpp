@@ -10,7 +10,6 @@
 #define PYPP_TYPENAME /* this is only due to gcc4.4 ignoring the c++ std */
 #define PYPP_EXPLICIT_CAST
 #define PYPP_INSTANTIATE(TYPE) inline void _instantiate(TYPE& a) { static_cast<void>(a); }
-#define PYPP_DEFAULT(x) x {}
 #define PYPP_DELETE(x)
 #define PYPP_EXCLUDE(...)
 #define PYPP_INIT(TYPE, VALUE) TYPE
@@ -21,10 +20,15 @@
 #define PYPP_TYPENAME typename
 #define PYPP_EXPLICIT_CAST explicit
 #define PYPP_INSTANTIATE(TYPE)
-#define PYPP_DEFAULT(x) x = default
 #define PYPP_DELETE(x) x = delete
 #define PYPP_EXCLUDE(...) __VA_ARGS__
 #define PYPP_INIT(TYPE, VALUE) TYPE = VALUE
+#endif
+
+#if defined(PYPLUSPLUS) && !defined(PYBINDINGS)
+#define PYPP_DEFAULT(x) x
+#else
+#define PYPP_DEFAULT(x) x = default
 #endif
 
 #if __cplusplus >= 201103L
