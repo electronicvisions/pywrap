@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import os
 
 try:
     from waflib.extras import symwaf2ic
@@ -28,6 +27,7 @@ def options(opt):
     opt.load('boost')
     opt.load('pypp')
     opt.load('pytest')
+    opt.load('post_task')
 
 def configure(cfg):
     cfg.env.build_python_bindings = not cfg.options.disable_bindings
@@ -40,6 +40,7 @@ def configure(cfg):
     cfg.load('boost')
     cfg.load('pypp')
     cfg.load('pytest')
+    cfg.load('post_task')
 
     cfg.check_python_version(minver=(2, 6))
     cfg.check_python_headers()
@@ -87,9 +88,10 @@ def build_pywrap(bld):
 
     bld(
         target          = "pywrap",
-        features        = 'cxx cxxshlib pyembed',
+        features        = 'cxx cxxshlib pyembed post_task',
         source          = bld.path.ant_glob('src/pywrap/*.cpp'),
         use             = [ 'pywrap_inc', 'pyublas_inc', 'BOOST_PYWRAP' ],
+        post_task       = [ 'pywraptest' ],
         install_path    = 'lib',
         cxxflags=[
             '-Wall',
@@ -121,6 +123,7 @@ def build_pywrap(bld):
     )
 
     bld(
+        name            = "pywraptest",
         tests           = ['src/test/pywraptest.py'],
         features        = 'pytest',
         use             = 'pywraptestmodule pywraptestpypp pyublas',
