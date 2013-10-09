@@ -1,6 +1,8 @@
 #pragma once
 
 #include <boost/python.hpp>
+#include <boost/make_shared.hpp>
+
 #include "pyublas/numpy.hpp"
 
 namespace pywrap {
@@ -19,11 +21,20 @@ struct convert_to_numpy< std::vector<T> >
 {
 	typedef pyublas::numpy_vector<T> numpy_type;
 
-	inline PyObject * operator()(const std::vector<T> & v) const
+	inline PyObject * operator()(std::vector<T> && v) const
 	{
-        numpy_type * numpy = new numpy_type(v.size());
-		std::copy(v.begin(), v.end(), numpy->begin());
-        return boost::python::incref(boost::python::object(numpy).ptr());
+		auto v_ptr = boost::make_shared< std::vector<T> >(std::move(v));
+		boost::python::object obj(boost::static_pointer_cast<void>(v_ptr));
+
+		npy_intp dims[] = { static_cast<npy_intp>(v_ptr->size()) };
+		PyObject * numpy = PyArray_SimpleNewFromData(
+				1, // dimensions
+				dims, // shape
+				pyublas::get_typenum(T()),
+				reinterpret_cast<void*>(v_ptr->data())
+		);
+		PyArray_SetBaseObject((PyArrayObject*)numpy, boost::python::incref(obj.ptr()));
+        return numpy;
 	}
 
 	PyTypeObject const *get_pytype() const {

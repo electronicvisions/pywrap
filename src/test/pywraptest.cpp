@@ -6,6 +6,8 @@
 #include "pywrap/expose_array_operator.hpp"
 #include "pywrap/return_numpy_policy.hpp"
 
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+
 struct X {
 	int operator[](size_t ii) { return ii; }
 };
@@ -48,6 +50,8 @@ std::vector<unsigned short> makeUShortVector()
 {
 	return std::vector<unsigned short>({0,1,2,3,4,5,6,7,8,9});
 }
+
+struct dummy;
 
 // Some compile time checks on expose_array_operator
 void test_array_trais()
@@ -121,7 +125,7 @@ BOOST_PYTHON_MODULE(pywraptestmodule)
     using namespace boost::python;
 	using namespace ::pywrap;
 
-	import("pyublas");
+	import("pywrapsupport");
 
     class_<Y>("Y")
         .def(expose_array_operator(&Y::operator[]))
@@ -143,7 +147,6 @@ BOOST_PYTHON_MODULE(pywraptestmodule)
 
 	def("makeDoubleVector", &makeDoubleVector, ReturnNumpyPolicy());
 	def("makeUShortVector", &makeUShortVector, ReturnNumpyPolicy());
-
 
 	class_<A>("A")
 		.def("a", &A::a)
