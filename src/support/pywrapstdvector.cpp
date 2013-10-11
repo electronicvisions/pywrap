@@ -1,13 +1,15 @@
 #include "pywrap/create_constructor.hpp"
 #include "pywrap/expose_array_operator.hpp"
 #include "pywrap/return_numpy_policy.hpp"
+#include <boost/python/suite/indexing/indexing_suite.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
 namespace {
 	template <typename T>
 	void addVector(const char * const name)
 	{
 		boost::python::class_< std::vector<T> >(name)
-			.def( boost::python::indexing::vector_suite< std::vector< T> >() );
+			.def( boost::python::vector_indexing_suite< std::vector< T> >() )
 			.def( "__init__", boost::python::make_constructor(&::pywrap::create_constructor< ::std::vector<T> >::construct))
 		;
 	}
