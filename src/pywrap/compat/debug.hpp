@@ -5,6 +5,8 @@
 #include <string>
 namespace ZTL {
 
+std::string demangle(std::string const& n);
+
 template <typename T>
 std::string typestring(T t);
 
