@@ -80,17 +80,17 @@ class STLExposerBase(object):
     # TODO we could use pygccxml.declarations.cpptypes.FUNDAMENTAL_TYPES here?
     # but be careful with 'short unsigned int'
     builtins = {
-            "bool"           : "Bool",
-            "char"           : "Char",
-            "double"         : "Double",
             "float"          : "Float",
-            "int"            : "Int",
-            "long"           : "Long",
-            "short"          : "Short",
-            "unsigned char"  : "UChar",
-            "unsigned int"   : "UInt",
-            "unsigned short" : "UShort",
-            "unsigned long"  : "ULong",
+            "double"         : "Double",
+            "bool"           : "Bool",
+            "signed char"    : "Int8",
+            "short"          : "Int16",
+            "int"            : "Int32",
+            "long"           : "Int64",
+            "unsigned char"  : "UInt8",
+            "unsigned short" : "UInt16",
+            "unsigned int"   : "UInt32",
+            "unsigned long"  : "UInt64",
             }
 
     @classmethod
@@ -138,7 +138,6 @@ class STLExposerBase(object):
             elif arg in cls.builtins:
                 name.append( cls.builtins[arg] )
             else:
-                print cls, c, arg
                 # Enumerations are exposed as class_t and enumeration_t, don't use the 2nd
                 try:
                     decls_f = lambda d: not (isinstance(d, (enumeration_t)) or isinstance(d, (typedef_t)))

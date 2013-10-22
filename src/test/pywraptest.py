@@ -67,5 +67,28 @@ class Test_Exposer_Utils(unittest.TestCase):
 
         self.assertIs(t.int_type, int)
 
+    def test_vector(self):
+        import pywraptestpypp as t
+        import pywrapstdvector
+        v_f = pywrapstdvector.Vector_Float()
+        v_d = pywrapstdvector.Vector_Double()
+        t.test_vector(v_f)
+        t.test_vector(v_d)
+
+        self.assertAlmostEqual(v_f[0], 0.7)
+        self.assertAlmostEqual(v_d[0], 1.4)
+
+    def test_vector_typedefs(self):
+        import pywraptestpypp as t
+        import pywrapstdvector
+
+        tds = t.TestVectorTypedefs;
+
+        self.assertIs(tds.Vector_Bool, pywrapstdvector.Vector_Bool)
+        self.assertIs(tds.Vector_Float, pywrapstdvector.Vector_Float)
+        self.assertIs(tds.Vector_Double, pywrapstdvector.Vector_Double)
+
+
+
 if __name__ == '__main__':
     unittest.main()

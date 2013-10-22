@@ -90,7 +90,7 @@ def build_pywrap(bld):
         target          = "pywrap",
         features        = 'cxx cxxshlib pyembed post_task',
         source          = bld.path.ant_glob('src/pywrap/*.cpp'),
-        use             = [ 'pywrap_inc', 'pyublas_inc', 'BOOST_PYWRAP' ],
+        use             = [ 'pywrap_inc', 'pyublas', 'BOOST_PYWRAP' ],
         post_task       = [ 'pywraptest', 'pywrapsupport' ],
         install_path    = 'lib',
         cxxflags=[
@@ -120,11 +120,22 @@ def build_pywrap(bld):
     )
 
     bld(
+        target         = 'pywrapstdvector',
+        features       = 'cxx pypp cxxshlib pyext pyembed',
+        gen_defines    = 'PYPLUSPLUS',
+        use            = ['pywrap'],
+        headers        = 'src/support/pywrapstdvector.h',
+        script         = 'src/support/pywrapstdvector.py',
+        **test_flags
+    )
+
+    bld(
         target         = "pywraptestpypp",
         module         = "pywraptestpypp",
         features       = 'cxx pypp cxxshlib pyext pyembed',
         gen_defines    = 'PYPLUSPLUS __STRICT_ANSI__',
         script         = 'src/test/pypp/generate.py',
+        use            = ['pywrap', 'pywrapstdvector'],
         headers        = bld.path.ant_glob("src/test/pypp/*.hpp"),
         source         = bld.path.ant_glob("src/test/pypp/*.cpp"),
         **test_flags
@@ -133,7 +144,7 @@ def build_pywrap(bld):
     bld(
         name            = "pywraptest",
         tests           = ['src/test/pywraptest.py'],
-        features        = 'pytest',
+        features        = 'use pytest',
         use             = 'pywraptestmodule pywraptestpypp pyublas',
         install_path    = 'bin/tests',
     )
