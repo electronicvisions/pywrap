@@ -87,11 +87,19 @@ def build_pywrap(bld):
     )
 
     bld(
+        target          = 'pywrapsupport',
+        features        = 'cxx cxxshlib pyext pyembed',
+        source          = 'src/support/pywrapsupport.cpp',
+        use             = [ 'pywrap_inc', 'pyublas', 'BOOST_PYWRAP' ],
+        **test_flags
+    )
+
+    bld(
         target          = "pywrap",
         features        = 'cxx cxxshlib pyembed post_task',
         source          = bld.path.ant_glob('src/pywrap/*.cpp'),
-        use             = [ 'pywrap_inc', 'pyublas', 'BOOST_PYWRAP' ],
-        post_task       = [ 'pywraptest', 'pywrapsupport' ],
+        use             = ['pywrap_inc', 'pywrapsupport'],
+        post_task       = ['pywraptest'],
         install_path    = 'lib',
         cxxflags=[
             '-Wall',
@@ -112,9 +120,9 @@ def build_pywrap(bld):
     )
 
     bld(
-        target          = 'pywrapsupport',
+        target          = 'pywrapstdvector',
         features        = 'cxx cxxshlib pyext pyembed',
-        source          = 'src/support/pywrapsupport.cpp',
+        source          = 'src/support/pywrapstdvector.cpp',
         use             = [ 'pywrap' ],
         **test_flags
     )
