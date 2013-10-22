@@ -18,6 +18,8 @@ class Wrapper(object):
         parser.add_argument('-D', '--define', dest='defines', action='append')
         parser.add_argument('-o', '--output_dir', dest='output_dir', action='store')
         parser.add_argument('-M', '--module_name', dest='module_name', action='store')
+        parser.add_argument('--dep_module', dest='dep_modules', action='append', default=[])
+        parser.add_argument('--decl_db', dest='decl_dbs', action='append', default=[])
         parser.add_argument('sources', nargs='+')
         self.args = parser.parse_args()
 
@@ -46,6 +48,18 @@ class Wrapper(object):
 
         for cls in self.mb.classes():
             cls.redefine_operators = True
+
+        decl_db_ext = '.exposed_decl.pypp.txt'
+        for decl_db in self.args.decl_dbs:
+            if not os.path.exists(decl_db):
+                raise ValueError('Couldn\'t find "%s"' % decl_db)
+            if not decl_db.endswith(decl_db_ext):
+                raise ValueError('Invalid file ending on "%s", expected "%s"' % (decl_db, decl_db_ext))
+            module = os.path.basename(decl_db)[:-len(decl_db_ext)]
+            self.mb.register_module_dependency(decl_db, module)
+
+        for module in self.args.dep_modules:
+            self.mb.add_registration_code('bp::import("%s");' % module, False)
 
     @property
     def ishell(self):
