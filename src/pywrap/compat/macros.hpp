@@ -9,7 +9,7 @@
 #define PYPP_CLASS_ENUM(name) enum name
 #define PYPP_TYPENAME /* this is only due to gcc4.4 ignoring the c++ std */
 #define PYPP_EXPLICIT_CAST
-#define PYPP_INSTANTIATE(TYPE) inline void _instantiate(TYPE& a) { static_cast<void>(a); }
+#define PYPP_INSTANTIATE(TYPE) static inline void pywrap_instantiate(TYPE& a) { static_cast<void>(a); }
 #define PYPP_DELETE(x)
 #define PYPP_EXCLUDE(...)
 #define PYPP_INIT(TYPE, VALUE) TYPE
@@ -19,7 +19,7 @@
 #define PYPP_CLASS_ENUM(name) enum class name
 #define PYPP_TYPENAME typename
 #define PYPP_EXPLICIT_CAST explicit
-#define PYPP_INSTANTIATE(TYPE)
+#define PYPP_INSTANTIATE(TYPE) static inline void pywrap_instantiate(TYPE& a) { static_cast<void>(a); }
 #define PYPP_DELETE(x) x = delete
 #define PYPP_EXCLUDE(...) __VA_ARGS__
 #define PYPP_INIT(TYPE, VALUE) TYPE = VALUE
