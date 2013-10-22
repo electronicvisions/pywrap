@@ -21,6 +21,13 @@ class NamespaceUtil(object):
                 return self.parent.exportable
 
         @property
+        def already_exposed(self):
+            if self.parent is None:
+                return False
+            else:
+                return self.parent.already_exposed
+
+        @property
         def ignore(self):
             if self.parent is None:
                 return False
@@ -33,7 +40,7 @@ class NamespaceUtil(object):
 
 
     def add_decl(self, decl):
-        if isinstance(decl.parent, decl_wrappers.namespace_t):
+        if isinstance(decl.parent, decl_wrappers.namespace_t) and not decl.already_exposed:
             old_name = decl.alias
             ns, name = self.gen_alias(decl)
             decl.wrapper_alias = name + "_wrapper"
@@ -79,7 +86,7 @@ class NamespaceUtil(object):
         return ns, "_".join(ns) + "_" + (name or decl.alias)
 
     def _skip_decl(self, decl):
-        return decl.ignore or not decl.exportable
+        return decl.ignore or decl.already_exposed or not decl.exportable
 
     def write_symbols(self, mb):
         code = []
