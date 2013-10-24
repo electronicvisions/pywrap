@@ -15,6 +15,16 @@ def get_all_bases(cls, only_public = True ):
     else:
         return [ x.related_class for x in cls.recursive_bases ]
 
+def has_default_constructor(c):
+    def default_callable(args):
+        for a in args:
+            if getattr(a, 'default_value', None) is None:
+                return False
+        return True
+
+    return any(default_callable(x.arguments) for x in c.constructors())
+
+
 def add_comparison_operators(c, disable_all=False):
     c.include_files.append('pywrap/operator_helper.hpp')
 
