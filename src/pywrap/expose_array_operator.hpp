@@ -3,6 +3,7 @@
 #include <functional>
 #include <type_traits>
 #include <boost/python.hpp>
+#include <boost/mpl/vector.hpp>
 
 namespace pywrap {
 
