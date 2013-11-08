@@ -120,14 +120,6 @@ def build_pywrap(bld):
     )
 
     bld(
-        target          = 'pywrapstdvector',
-        features        = 'cxx cxxshlib pyext pyembed',
-        source          = 'src/support/pywrapstdvector.cpp',
-        use             = [ 'pywrap' ],
-        **test_flags
-    )
-
-    bld(
         target         = 'pywrapstdvector',
         features       = 'cxx pypp cxxshlib pyext pyembed',
         gen_defines    = 'PYPLUSPLUS',
