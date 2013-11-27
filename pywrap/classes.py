@@ -153,6 +153,13 @@ def expose_std_hash(c):
                  boost::mpl::vector<size_t, {0} >()))'.format(c.partial_decl_string, stdhash))
 
 
+def add_pickle_suite(c):
+    c.include_files.append('pywrap/pickle_suite.hpp')
+    c.add_registration_code(
+        'def_pickle(HMF::pyplusplus::pickle_suite< {} >())'.format(
+            c.create_decl_string()))
+
+
 def add_context_manager(c):
     """Adds context manager stuff (__enter__(self) and __exit__(self, exc_type,
     exc_value, traceback)) to wrapped class"""
