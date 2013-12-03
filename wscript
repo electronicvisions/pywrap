@@ -78,7 +78,7 @@ def build_pywrap(bld):
              '-fPIC', ],
         "linkflags" :
             ['-Wl,-z,defs'],
-        "install_path" : 'lib',
+        "install_path" : '${PREFIX}/lib',
     }
 
     bld(
@@ -100,7 +100,7 @@ def build_pywrap(bld):
         source          = bld.path.ant_glob('src/pywrap/*.cpp'),
         use             = ['pywrap_inc', 'pywrapsupport'],
         post_task       = ['pywraptest'],
-        install_path    = 'lib',
+        install_path    = '${PREFIX}/lib',
         cxxflags=[
             '-Wall',
             '-Wextra',
@@ -146,6 +146,6 @@ def build_pywrap(bld):
         tests           = ['src/test/pywraptest.py'],
         features        = 'use pytest',
         use             = 'pywraptestmodule pywraptestpypp pyublas',
-        install_path    = 'bin/tests',
+        install_path    = '${PREFIX}/bin/tests',
     )
 
