@@ -10,10 +10,9 @@ except ImportError:
     recurse = lambda ctx: recurse_depends(depends, ctx)
 
 def depends(ctx):
-    if not ctx.options.disable_bindings:
-        ctx('pygccxml')
-        ctx('pyplusplus')
-        ctx('pyublas')
+    ctx('pygccxml')
+    ctx('pyplusplus')
+    ctx('pyublas')
 
 
 def options(opt):
@@ -59,6 +58,7 @@ def build(bld):
 
     bld(
         target          = "pywrap_inc",
+        use             = [ 'pyublas_inc' ],
         export_includes = [ 'src' ],
     )
 
@@ -80,11 +80,6 @@ def build_pywrap(bld):
             ['-Wl,-z,defs'],
         "install_path" : '${PREFIX}/lib',
     }
-
-    bld(
-        target          = "pywrap_inc",
-        export_includes = [ 'src' ],
-    )
 
     bld(
         target          = 'pywrapsupport',
