@@ -18,7 +18,7 @@ def depends(ctx):
 
 def options(opt):
     hopts = opt.add_option_group('Python bindings options')
-    hopts.add_option('--disable-bindings', action='store_true', default=False,
+    hopts.add_withoption('bindings', default=False, dest="disable_bindings",
                    help='Disable the generation and build of python bindings')
 
     recurse(opt)
