@@ -10,7 +10,7 @@ except ImportError:
     recurse = lambda ctx: recurse_depends(depends, ctx)
 
 def depends(ctx):
-    if not ctx.options.disable_bindings:
+    if ctx.options.bindings:
         ctx('pygccxml')
         ctx('pyplusplus')
         ctx('pyublas')
@@ -18,7 +18,7 @@ def depends(ctx):
 
 def options(opt):
     hopts = opt.add_option_group('Python bindings options')
-    hopts.add_withoption('bindings', default=False, dest="disable_bindings",
+    hopts.add_withoption('bindings', default=True, dest='bindings',
                    help='Disable the generation and build of python bindings')
 
     recurse(opt)
@@ -30,7 +30,7 @@ def options(opt):
     opt.load('post_task')
 
 def configure(cfg):
-    cfg.env.build_python_bindings = not cfg.options.disable_bindings
+    cfg.env.build_python_bindings = cfg.options.bindings
     if not cfg.env.build_python_bindings:
         return
 
