@@ -14,11 +14,9 @@ def depends(ctx):
     ctx('pyplusplus')
     ctx('pyublas')
 
-
 def options(opt):
     hopts = opt.add_option_group('Python bindings options')
-    hopts.add_option('--disable-bindings', action='store_true', default=False,
-                   help='Disable the generation and build of python bindings')
+    hopts.add_withoption('bindings', default=True, help='Toggle the generation and build of python bindings')
 
     recurse(opt)
     opt.load('g++')
@@ -29,7 +27,7 @@ def options(opt):
     opt.load('post_task')
 
 def configure(cfg):
-    cfg.env.build_python_bindings = not cfg.options.disable_bindings
+    cfg.env.build_python_bindings = cfg.options.with_bindings
     if not cfg.env.build_python_bindings:
         return
 
