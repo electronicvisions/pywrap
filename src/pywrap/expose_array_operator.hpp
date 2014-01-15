@@ -3,6 +3,7 @@
 #include <functional>
 #include <type_traits>
 #include <boost/python.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/mpl/vector.hpp>
 
 namespace pywrap {
@@ -11,6 +12,21 @@ namespace detail
 {
 	struct array_operator_auto_value_type {};
 	struct array_operator_auto_policy_type {};
+
+	template <typename T>
+	struct is_smart_pointer {
+		static const bool value = false;
+	};
+
+	template <typename T>
+	struct is_smart_pointer<boost::shared_ptr<T>> {
+		static const bool value = true;
+	};
+
+	template <typename T>
+	struct is_smart_pointer<boost::shared_ptr<const T>> {
+		static const bool value = true;
+	};
 
 	template<bool is_integral, bool is_ref, bool is_const>
 	struct auto_policy_type {
@@ -35,9 +51,11 @@ namespace detail
 	template <typename ValueType, typename Policy>
 	struct array_operator_get_policy
 	{
+		typedef typename std::decay<ValueType>::type decayed_type;
 		static const bool is_intergral =
-			std::is_integral<typename std::decay<ValueType>::type>::value
-			 || std::is_enum<typename std::decay<ValueType>::type>::value;
+			std::is_integral<decayed_type>::value
+			 || std::is_enum<decayed_type>::value
+			 || is_smart_pointer<decayed_type>::value;
 		static const bool is_ref =  std::is_reference< ValueType >::value;
 		static const bool is_const = std::is_const<typename std::remove_reference<ValueType>::type>::value;
 
@@ -51,12 +69,14 @@ namespace detail
 	template <typename ReturnType, typename ForcedValueType>
 	struct array_operator_get_value_type
 	{
+		typedef typename std::decay<ReturnType>::type decayed_type;
+
 		static const bool has_setter_value_type =
 			!std::is_same<ForcedValueType, array_operator_auto_value_type>::value;
 
 		typedef typename std::conditional<
-			std::is_integral< typename std::decay<ReturnType>::type >::value
-			 || std::is_enum< typename std::decay<ReturnType>::type >::value,
+			std::is_integral< decayed_type >::value
+			 || std::is_enum< decayed_type >::value,
 			typename std::decay<ReturnType>::type,
 			ReturnType
 				>::type deduced_value_type;
