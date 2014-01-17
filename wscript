@@ -91,7 +91,7 @@ def build_pywrap(bld):
         target          = "pywrap",
         features        = 'cxx cxxshlib pyembed post_task',
         source          = bld.path.ant_glob('src/pywrap/*.cpp'),
-        use             = ['pywrap_inc', 'pywrapsupport'],
+        use             = ['pywrap_inc', 'pywrapsupport', 'PYEMBED'],
         post_task       = ['pywraptest'],
         install_path    = '${PREFIX}/lib',
         cxxflags=[
