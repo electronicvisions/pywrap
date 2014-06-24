@@ -16,6 +16,10 @@ struct is_std_vector<std::vector<T> > : boost::true_type {};
 template<typename T>
 struct convert_to_numpy;
 
+/// This converter takes a std::vector with a builtin data type
+/// and lays a numpy array over the memory of the vector.
+/// The vector is moved into a Python object holding and its life
+/// time is bound to the numpy array.
 template<typename T>
 struct convert_to_numpy< std::vector<T> >
 {
