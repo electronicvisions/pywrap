@@ -8,7 +8,7 @@ struct Base1
 
 	operator int() { return 0; }
 
-	Base1 operator+(const Base1 & b) { return Base1(); }
+	Base1 operator+(const Base1 &) { return Base1(); }
 };
 
 struct Base2
