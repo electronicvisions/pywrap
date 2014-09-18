@@ -5,6 +5,8 @@
 
 #include "pyublas/numpy.hpp"
 
+#include "pywrap/numpy_no_warnings_wrapper.hpp"
+
 namespace pywrap {
 
 template<typename T>
@@ -31,13 +33,14 @@ struct convert_to_numpy< std::vector<T> >
 		boost::python::object obj(boost::static_pointer_cast<void>(v_ptr));
 
 		npy_intp dims[] = { static_cast<npy_intp>(v_ptr->size()) };
-		PyObject * numpy = PyArray_SimpleNewFromData(
+		PyObject * numpy = Wrapper_PyArray_SimpleNewFromData(
 				1, // dimensions
 				dims, // shape
 				pyublas::get_typenum(T()),
 				reinterpret_cast<void*>(v_ptr->data())
 		);
-		PyArray_SetBaseObject((PyArrayObject*)numpy, boost::python::incref(obj.ptr()));
+		Wrapper_PyArray_SetBaseObject((PyArrayObject*)numpy,
+			                          boost::python::incref(obj.ptr()));
         return numpy;
 	}
 

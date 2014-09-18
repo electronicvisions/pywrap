@@ -16,7 +16,8 @@ def depends(ctx):
 
 def options(opt):
     hopts = opt.add_option_group('Python bindings options')
-    hopts.add_withoption('bindings', default=True, help='Toggle the generation and build of python bindings')
+    hopts.add_withoption('bindings', default=True,
+            help='Toggle the generation and build of python bindings')
 
     recurse(opt)
     opt.load('g++')
@@ -71,7 +72,7 @@ def build(bld):
 def build_pywrap(bld):
     test_flags = {
         "cxxflags" :
-            ['-ggdb3', '-std=c++0x', '-O0',
+            ['-ggdb3', '-std=c++0x', '-O0', '-pedantic',
              '-Wall', '-Wextra', '-Wno-long-long', '-Wno-deprecated', '-Wno-format',
              '-fPIC', ],
         "linkflags" :
