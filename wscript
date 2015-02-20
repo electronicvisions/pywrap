@@ -40,6 +40,8 @@ def configure(cfg):
     cfg.load('pytest')
     cfg.load('post_task')
 
+    cfg.find_program('gccxml')
+
     cfg.check_python_version(minver=(2, 6))
     cfg.check_python_headers()
 
