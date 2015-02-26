@@ -170,7 +170,7 @@ class StdStringExposer(STLExposerBase):
             c.rename("WString")
 
 class Sequence_Exposer(STLExposerBase):
-    containers = ["array", "vector"]
+    containers = ["array", "vector", "list"]
 
     @classmethod
     def expose(cls, c):
