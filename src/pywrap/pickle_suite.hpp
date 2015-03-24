@@ -9,6 +9,7 @@
 namespace HMF {
 namespace pyplusplus {
 
+// FIXME@CK Fix pickling when pyhton class dict is not empty: #1641
 template <typename T>
 struct pickle_suite : boost::python::pickle_suite
 {
