@@ -1,9 +1,11 @@
 #pragma once
 
+#include <string>
 #include <vector>
 #include "pywrap/compat/cstdint.hpp"
 #include "pywrap/compat/macros.hpp"
 
+PYPP_INSTANTIATE(std::vector<std::string>)
 PYPP_INSTANTIATE(std::vector<float>)
 PYPP_INSTANTIATE(std::vector<double>)
 PYPP_INSTANTIATE(std::vector<bool>)
