@@ -1,8 +1,7 @@
 #pragma once
 
 #ifdef PYPLUSPLUS
-#define PYPP_CONSTEXPR const
-#define constexpr
+#define PYPP_CONSTEXPR
 #define static_assert(...)
 #define nullptr NULL
 #define PYPP_TYPED_ENUM(name, type) enum name
