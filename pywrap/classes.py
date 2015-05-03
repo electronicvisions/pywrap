@@ -74,6 +74,13 @@ def add_numpy_construtor(c):
     for code in _numpy_construtor_reg_code:
         c.add_registration_code(code.format(c.decl_string))
 
+_pyiterable_converter_includes = ('pywrap/from_pyiterable.hpp', )
+_pyiterable_converter_reg_code = 'iterable_converter().from_python< {} >();'
+
+def add_from_pyiterable_converter_to(c):
+    c.include_files.extend(_pyiterable_converter_includes)
+    c.add_registration_code(_pyiterable_converter_reg_code.format(c.decl_string), works_on_instance=False)
+
 _array_operator_includes  = ("pywrap/expose_array_operator.hpp", )
 _array_operator_code = 'def(::pywrap::expose_array_operator( (%(type)s)(%(op)s)%(policy)s ))'
 
