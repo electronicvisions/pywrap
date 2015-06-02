@@ -59,8 +59,12 @@ class Test_Exposer_Utils(unittest.TestCase):
             self.assertEqual(a, b)
 
     def test_typdefs(self):
+        """
+        Check cross module typedefs
+        """
+        from pywrapstdvector import Vector_String
         import pywraptestpypp as t
-        self.assertIs(t.String1, t.Vector_String)
+        self.assertIs(t.String1, Vector_String)
         self.assertIs(t.String1, t.String2)
         self.assertIs(t.String1, t.String3)
         self.assertIs(t.String1, t.String4)
