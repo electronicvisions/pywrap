@@ -145,3 +145,22 @@ def build_pywrap(bld):
         install_path    = '${PREFIX}/bin/tests',
     )
 
+    bld(
+        target         = "convertertestmodule",
+        module         = "convertertestmodule",
+        features       = 'cxx pypp cxxshlib pyext pyembed',
+        gen_defines    = 'PYPLUSPLUS __STRICT_ANSI__',
+        script         = 'test/converter/generate.py',
+        use            = ['pywrap', 'pywrapstdvector', 'pyublas'],
+        headers        = bld.path.ant_glob("test/converter/*.h"),
+        #source         = bld.path.ant_glob("test/converter/*.h"),
+        **test_flags
+    )
+
+    bld(
+        name            = "test_pywrap_converter",
+        tests           = ['test/converter/test_pywrap_converter.py'],
+        features        = 'use pytest',
+        use             = 'convertertestmodule pywraptestpypp pyublas',
+        install_path    = '${PREFIX}/bin/tests',
+    )
