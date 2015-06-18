@@ -25,9 +25,6 @@ class ConverterTest(unittest.TestCase):
         dtype, size = cls.sink(data)
         return self.get_dtype(dtype), size
 
-    def test_list(self):
-        self.callit(self.myList)
-
     def test_overloads(self):
         dtype, size = self.callit(pywrapstdvector.Vector_Double(self.myList))
         self.assertEqual(size, len(self.myList))
@@ -50,7 +47,7 @@ class ConverterTest(unittest.TestCase):
         dtype, size = self.callit((1, 2, 3, 4))
         self.assertEqual(dtype, float)
 
-    def verify_double_conversion(self):
+    def test_verify_double_conversion(self):
         x = numpy.linspace(-5 * numpy.pi, 5 * numpy.pi, 1e5)
         data = numpy.array(numpy.sin(x) * 10, dtype=numpy.double)
 
@@ -59,7 +56,7 @@ class ConverterTest(unittest.TestCase):
         self.assertEqual(cls.test_double_sink(list(data)), list(data))
         self.assertEqual(cls.test_double_sink(tuple(data)), list(data))
 
-    def verify_int_conversion(self):
+    def test_verify_int_conversion(self):
         x = numpy.linspace(-5 * numpy.pi, 5 * numpy.pi, 1e5)
         data = numpy.array(numpy.sin(x) * 10, dtype=numpy.int32)
 
@@ -67,6 +64,40 @@ class ConverterTest(unittest.TestCase):
         self.assertEqual(cls.test_int_sink(data), list(data))
         self.assertEqual(cls.test_int_sink(list(data)), list(data))
         self.assertEqual(cls.test_int_sink(tuple(data)), list(data))
+
+    def test_verify_int_list(self):
+        cls = convertertestmodule.ConverterTest()
+        x = numpy.linspace(-5 * numpy.pi, 5 * numpy.pi, 1e5)
+        data = numpy.array(numpy.sin(x) * 10, dtype=numpy.int16)
+
+        cls = convertertestmodule.ConverterTest()
+        self.assertEqual(cls.test_list_sink(data), list(data))
+        self.assertEqual(cls.test_list_sink(list(data)), list(data))
+        self.assertEqual(cls.test_list_sink(tuple(data)), list(data))
+
+    def test_verify_int_array(self):
+        cls = convertertestmodule.ConverterTest()
+        x = numpy.linspace(-5 * numpy.pi, 5 * numpy.pi, 32)
+        data = numpy.array(numpy.sin(x) * 10, dtype=numpy.int64)
+
+        cls = convertertestmodule.ConverterTest()
+        self.assertEqual(cls.test_array_sink(data), list(data))
+        self.assertEqual(cls.test_array_sink(list(data)), list(data))
+        self.assertEqual(cls.test_array_sink(tuple(data)), list(data))
+
+        with self.assertRaises(TypeError) as ctx:
+            cls.test_array_sink([0] * 31)
+        with self.assertRaises(TypeError) as ctx:
+            cls.test_array_sink([0] * 33)
+
+    def test_verify_element_vector(self):
+        cls = convertertestmodule.ConverterTest()
+        x = numpy.linspace(-5 * numpy.pi, 5 * numpy.pi, 1e5)
+        expected = [int(ii) for ii in numpy.sin(x) * 121]
+        data = [convertertestmodule.Element(ii) for ii in expected]
+
+        cls = convertertestmodule.ConverterTest()
+        self.assertEqual(cls.test_vector_element(data), expected)
 
     def test_speedIterVsPlain(self):
         start = time.time()

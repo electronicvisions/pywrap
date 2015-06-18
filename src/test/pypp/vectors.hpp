@@ -14,7 +14,6 @@ inline void test_vector(std::vector<double> & f)
 	f.push_back(1.4);
 }
 
-
 struct TestVectorTypedefs
 {
 	typedef std::vector<bool>   Vector_Bool;

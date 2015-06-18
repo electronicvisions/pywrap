@@ -176,6 +176,7 @@ class Sequence_Exposer(STLExposerBase):
     def expose(cls, c):
         super(Sequence_Exposer, cls).expose(c)
         classes.add_numpy_construtor(c)
+        classes.add_from_pyiterable_converter_to(c)
         c.disable_warnings(warnings_.W1008)
         for f in c.mem_funs():
             f.disable_warnings(warnings_.W1008, warnings_.W1050)
@@ -187,7 +188,7 @@ class Not_Exposer(STLExposerBase):
     def create_alias(cls, c):
         setattr(c, cls.ignore_in_alias_tag, True)
 
-class Bitset_Exposer(Sequence_Exposer):
+class Bitset_Exposer(STLExposerBase):
     containers = ["bitset"]
 
     bitset_re = re.compile(r"bitset<(\d*)\w*>")
@@ -195,6 +196,10 @@ class Bitset_Exposer(Sequence_Exposer):
     @classmethod
     def expose(cls, c):
         super(Bitset_Exposer, cls).expose(c)
+        classes.add_numpy_construtor(c)
+        c.disable_warnings(warnings_.W1008)
+        for f in c.mem_funs():
+            f.disable_warnings(warnings_.W1008, warnings_.W1050)
         c.mem_opers().include()
         c.allow_implicit_conversion = True
         c.include_files.append('pywrap/print_helper.hpp')
