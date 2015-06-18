@@ -10,7 +10,12 @@ mb = wrap.mb
 cls = mb.class_('ConverterTest')
 cls.include()
 
+mb.decl('int_tag').include()
+mb.decl('double_tag').include()
+
 data_cls = mb.class_('::std::vector<double>')
+classes.add_from_pyiterable_converter_to(data_cls, cls)
+data_cls = mb.class_('::std::vector<int>')
 classes.add_from_pyiterable_converter_to(data_cls, cls)
 
 wrap.finish()

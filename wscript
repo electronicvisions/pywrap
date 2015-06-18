@@ -153,7 +153,6 @@ def build_pywrap(bld):
         script         = 'test/converter/generate.py',
         use            = ['pywrap', 'pywrapstdvector', 'pyublas'],
         headers        = bld.path.ant_glob("test/converter/*.h"),
-        #source         = bld.path.ant_glob("test/converter/*.h"),
         **test_flags
     )
 

@@ -75,7 +75,7 @@ def add_numpy_construtor(c):
         c.add_registration_code(code.format(c.decl_string))
 
 _pyiterable_converter_includes = ('pywrap/from_pyiterable.hpp', )
-_pyiterable_converter_reg_code = 'iterable_converter().from_python< {} >();'
+_pyiterable_converter_reg_code = '::pywrap::iterable_converter().from_python< {} >();'
 
 def add_from_pyiterable_converter_to(cls, base = None):
     """Adds a generic converter to a STL container (@cls) from a Python iterable.
