@@ -92,6 +92,23 @@ class Test_Exposer_Utils(unittest.TestCase):
         self.assertIs(tds.Vector_Float, pywrapstdvector.Vector_Float)
         self.assertIs(tds.Vector_Double, pywrapstdvector.Vector_Double)
 
+    def test_pickle(self):
+        import pywraptestpypp as t
+        import pickle
+
+        inst = t.WithPickle()
+        inst.value = 42
+        inst2 = pickle.loads(pickle.dumps(inst))
+        self.assertEqual(inst.value, inst2.value)
+
+        inst = t.WithPickle()
+        inst.value = 42
+        inst.other_value = 13
+        with self.assertRaises(ValueError) as ctx:
+            pickle.dumps(inst)
+
+        self.assertIn('WithPickle', str(ctx.exception))
+        self.assertIn('other_value', str(ctx.exception))
 
 
 if __name__ == '__main__':

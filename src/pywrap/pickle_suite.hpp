@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <boost/python.hpp>
+#include <boost/python/stl_iterator.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 
@@ -14,8 +15,28 @@ template <typename T>
 struct pickle_suite : boost::python::pickle_suite
 {
 	static boost::python::object
-	getstate(T const& obj)
+	getstate(boost::python::object pyobj)
 	{
+		using namespace boost::python;
+
+		if (pyobj.attr("__dict__"))
+		{
+			std::stringstream err;
+			err << "Pickling of wrapped instance of class '"
+				<< pyobj.ptr()->ob_type->tp_name
+				<< "' with additional python attributes is not supported.\n"
+				<< "Added attributes are:\n";
+
+			dict d = extract<dict>(pyobj.attr("__dict__"));
+			typedef stl_input_iterator<std::string> iterator;
+			for(iterator it(d.keys()), iend; it != iend; ++it) {
+				err << "\n - " << *it;
+			}
+			PyErr_SetString(PyExc_ValueError, err.str().c_str());
+			throw_error_already_set();
+		}
+
+		T const & obj = extract<T const &>(pyobj)();
 		std::ostringstream os;
 		{
 			boost::archive::binary_oarchive oa(os);
@@ -33,6 +54,8 @@ struct pickle_suite : boost::python::pickle_suite
 		boost::archive::binary_iarchive ia(is);
 		ia >> obj;
 	}
+
+	static bool getstate_manages_dict() { return true; }
 };
 
 } // end namespace pyplusplus

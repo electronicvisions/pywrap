@@ -27,4 +27,7 @@ namespaces.exclude_by_access_type(mb, ['variables', 'calldefs', 'classes'], 'pro
 # exclude names begining with a single underscore or ending with Cpp
 namespaces.exclude_by_regex(mb, ['calldefs'], r'(^_[^_])|(.*Cpp$)|(^impl$)')
 
+cls = mb.class_("WithPickle")
+classes.add_pickle_suite(cls)
+
 wrap.finish()
