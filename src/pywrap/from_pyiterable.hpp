@@ -8,15 +8,18 @@
 
 namespace pywrap {
 
-// partly copy and pasted from http://stackoverflow.com/questions/15842126/
+// copied and modified (see below) from http://stackoverflow.com/questions/15842126/
+// * support added for conversion to std::array
+// * support added for fast from-numpy conversion
+// * check (and disables) conversion from boost::python types
+//   (i.e. only raw Python-interface types allowed)
 
-/// @brief Type that allows for registration of conversions from
-///        python iterable types.
-/// @note currently only testet for array, list, vector
+/// @brief Class to support Python rvalue conversions from python iterables (i.e.
+///        PySequence types) to C++ Container types.
+/// @note currently only tested for std's array, list, vector
 struct iterable_converter
 {
-	/// @note Registers converter from a python interable type to the
-	///       provided type.
+	/// @note Registers converter to "Container" type
 	template <typename Container>
 	iterable_converter& from_python()
 	{
@@ -27,16 +30,15 @@ struct iterable_converter
 		return *this;
 	}
 
-	/// Exlude boost python types, because this can lead to messy situation
-	/// when handling function overloads.
-	/// Also I think it would be stupid to convert C++ typs in python
+	/// @note Check for PySequence and exclude boost::python's own types to
+	///       avoid problems when handling function overloads.
 	template <typename Container>
 	static void* convertible(PyObject* object)
 	{
 		// std::cerr << "Test convert to " << ztl::typestring<Container>() << std::endl;
 		using boost::python::objects::class_type;
-		if (!PyType_IsSubtype(object->ob_type, class_type().get())
-			&& PySequence_Check(object))
+		if ((PySequence_Check(object) == 1) &&
+		    !PyType_IsSubtype(object->ob_type, class_type().get()))
 			return PyObject_GetIter(object);
 		return NULL;
 	}
@@ -52,6 +54,7 @@ struct iterable_converter
 		new (storage) Container(boost::python::len(obj));
 	}
 
+	/// Version for std::array (i.e. fixed-length) conversion.
 	template <typename value_type, size_t size>
 	static void inplace_construct(std::array<value_type, size> * storage,
 								  boost::python::object obj)
@@ -64,7 +67,7 @@ struct iterable_converter
 		new (storage) std::array<value_type, size>();
 	}
 
-	/// @brief Convert iterable PyObject to C++ container type.
+	/// @brief Convert iterable PyObject (i.e. supporting PySequence) to C++ "Container" type.
 	///
 	/// Container Concept requirements:
 	///
@@ -105,13 +108,13 @@ struct iterable_converter
 		inplace_construct(container, obj);
 		data->convertible = storage;
 
-		/// Try numpy, but don't do implicit conversions of the datatype
+		// Try numpy, but don't do implicit conversions of the datatype
 		if (PyArray_Check(raw) &&
 			!from_numpy<value_type>::extract_vector(
 						obj, container->begin(), container->end()))
 		{
 			// If there are overloads, this causes boost python to try the
-			// nex possible one
+			// next possible one
 			PyErr_SetString(PyExc_TypeError, "Invalid numpy data type");
 			bp::throw_error_already_set();
 		}
