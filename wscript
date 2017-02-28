@@ -39,6 +39,10 @@ def configure(cfg):
     cfg.check_boost(
         lib='serialization python',
         uselib_store='BOOST_PYWRAP')
+
+    cfg.check_cxx(mandatory=True,
+                  header_name='cereal/cereal.hpp')
+
     cfg.pypp_add_module_path(cfg.path.abspath())
     cfg.pypp_add_module_dependency('pywrap')
     cfg.pypp_add_use('pywrap', 'BOOST_PYWRAP')
