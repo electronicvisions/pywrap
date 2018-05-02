@@ -38,7 +38,6 @@ def configure(cfg):
 
     cfg.check_boost(
         lib='serialization python',
-        cpp_standard = 'c++14',
         uselib_store='BOOST_PYWRAP')
     cfg.pypp_add_module_path(cfg.path.abspath())
     cfg.pypp_add_module_dependency('pywrap')
