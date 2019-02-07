@@ -266,6 +266,35 @@ def add_variant_converters_for(mb, cl):
     return True
 
 
+def add_optional_vector_wrapper_for(mb, variable):
+    if not templates.is_instantiation(variable.type.decl_string):
+        return False
+    name, args = templates.split(variable.type.decl_string)
+    if not name == '::boost::optional':
+        return False
+    assert(len(args) == 1)
+    vec, v_type = templates.split(args[0])
+
+    mb.add_registration_code(textwrap.dedent(
+    """
+    bp::class_<{optional}>("{optional}", bp::init<>()) // support default non-construct init
+        .def("is_initialized", &{optional}::is_initialized)
+        .def("value", &{optional}::value, bp::return_internal_reference<>())
+        .add_property("access", +[]({optional} const & self){{return *self;}}, +[]({optional}  self , bp::object& value)
+            {{
+                auto& vect = *self;
+                vect.clear();
+                for ( auto it = bp::stl_input_iterator< {v_type} > (value); it != bp::stl_input_iterator< {v_type} > (); it++) {{
+                    vect.push_back(*it);
+                }}
+                self = vect;
+            }} )
+        ;
+    ;
+    """).format(optional=variable.type.decl_string, alias=args[0], v_type=v_type[0]))
+    return True
+
+
 def add_omp_safe_virtual_functions(cls, *args, **kwargs):
     """
     Adds OMP based locking around callback to python in virtual function overrides
