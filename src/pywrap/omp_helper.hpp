@@ -10,17 +10,31 @@ namespace pywrap {
 
 class OMPLock {
 public:
-  OMPLock() { omp_init_lock(&m_lock); }
-  ~OMPLock() { omp_destroy_lock(&m_lock); }
+	OMPLock() : m_locked(false) { omp_init_nest_lock(&m_lock); }
+	~OMPLock()
+	{
+		if (m_locked)
+			unlock();
+		omp_destroy_nest_lock(&m_lock);
+	}
 
-  void lock() { omp_set_lock(&m_lock); }
+	void lock()
+	{
+		omp_set_nest_lock(&m_lock);
+		m_locked = true;
+	}
 
-  void unlock() { omp_unset_lock(&m_lock); }
+	void unlock()
+	{
+		m_locked = false;
+		omp_unset_nest_lock(&m_lock);
+	}
 
 private:
-  omp_lock_t m_lock;
+	omp_nest_lock_t m_lock;
+	bool m_locked;
 };
 
 typedef std::unique_lock<OMPLock> ScopedOMPGuard;
 
-} // end namespace pywrap
+} // pywrap
