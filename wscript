@@ -1,53 +1,63 @@
 #!/usr/bin/env python
 
+from waflib import Logs
+
+
 def depends(ctx):
     if ctx.options.with_pywrap_bindings:
+        # cannot decide if not needed (py2vs3 checks only run in configure)
         ctx('pygccxml')
         ctx('pyplusplus')
         ctx('pyublas')
 
+
 def options(opt):
     hopts = opt.add_option_group('Python bindings options')
     hopts.add_withoption('pywrap-bindings', default=True,
-            help='Toggle the generation and build of python bindings')
+                         help='Toggle the generation and build of python'
+                              'bindings (only available for Python2)')
 
     opt.load('compiler_cxx')
     opt.load('python')
-    opt.load('boost')
-    opt.load('pypp')
     opt.load('pytest')
+    opt.load('boost')
+
+    # cannot decide if not needed (py2vs3 checks only run in configure)
+    opt.load('pypp')
+
 
 def configure(cfg):
-    cfg.load('compiler_cxx')
-
     cfg.env.build_python_bindings = cfg.options.with_pywrap_bindings
-    if not cfg.env.build_python_bindings:
-        return
 
+    cfg.load('compiler_cxx')
     cfg.load('python')
-    cfg.load('boost')
-    cfg.load('pypp')
     cfg.load('pytest')
-
-    cfg.find_program('gccxml')
+    cfg.load('boost')
 
     cfg.check_python_version(minver=(2, 6))
     cfg.check_python_headers()
 
-    cfg.check_boost(
-        lib='serialization python',
-        uselib_store='BOOST_PYWRAP')
+    if int(cfg.env.PYTHON_VERSION.split('.')[0]) >= 3:
+        Logs.warn("Python is too new (>= 3); disabling all pywrap/py++/pygccxml-based Python wrapper generation")
+        cfg.env.build_python_bindings = False
+        cfg.options.with_pywrap_bindings = False
 
+    if cfg.env.build_python_bindings:
+        cfg.load('pypp')
+        cfg.find_program('gccxml')
+        cfg.check_boost(
+            lib='serialization python',
+            uselib_store='BOOST_PYWRAP')
+
+        cfg.pypp_add_module_path(cfg.path.abspath())
+        cfg.pypp_add_module_dependency('pywrap')
+        cfg.pypp_add_use('pywrap', 'BOOST_PYWRAP')
+        cfg.env.LIB_PYWRAP = cfg.env.LIB_PYEMBED
+        cfg.check_cxx(lib='gomp', cxxflags='-fopenmp', uselib_store='OPENMP4PYWRAP')
+
+    # non-py++ stuff
     cfg.check_cxx(mandatory=True,
                   header_name='cereal/cereal.hpp')
-
-    cfg.pypp_add_module_path(cfg.path.abspath())
-    cfg.pypp_add_module_dependency('pywrap')
-    cfg.pypp_add_use('pywrap', 'BOOST_PYWRAP')
-
-    cfg.env.LIB_PYWRAP = cfg.env.LIB_PYEMBED
-
-    cfg.check_cxx(lib='gomp', cxxflags='-fopenmp', uselib_store='OPENMP4PYWRAP')
 
 
 def build(bld):
