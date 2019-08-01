@@ -14,6 +14,7 @@
 #define PYPP_EXCLUDE(...)
 #define PYPP_INIT(TYPE, VALUE) TYPE
 #define PYPP_NOEXCEPT(VALUE)
+#define PYPP_INLINE(TYPE, NAME, VALUE) TYPE NAME = VALUE
 #else
 #define PYPP_CONSTEXPR constexpr
 #define PYPP_TYPED_ENUM(name, type) enum name : type
@@ -26,6 +27,7 @@
 #define PYPP_EXCLUDE(...) __VA_ARGS__
 #define PYPP_INIT(TYPE, VALUE) TYPE = VALUE
 #define PYPP_NOEXCEPT(VALUE) noexcept(VALUE)
+#define PYPP_INLINE(TYPE, NAME, VALUE) inline TYPE NAME = VALUE
 #endif
 
 #if defined(PYPLUSPLUS) && !defined(PYBINDINGS)
