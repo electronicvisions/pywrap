@@ -2,6 +2,7 @@
 
 #ifdef PYPLUSPLUS
 #define PYPP_CONSTEXPR
+#define PYPP_CONSTEXPR_STATIC static const
 #define static_assert(...)
 #define nullptr NULL
 #define PYPP_TYPED_ENUM(name, type) enum name
@@ -18,6 +19,7 @@
 #define PYPP_HIDE_BODY(BODY) ;
 #else
 #define PYPP_CONSTEXPR constexpr
+#define PYPP_CONSTEXPR_STATIC static constexpr
 #define PYPP_TYPED_ENUM(name, type) enum name : type
 #define PYPP_CLASS_ENUM(name) enum class name
 #define PYPP_TYPED_CLASS_ENUM(name, type) enum class name : type
