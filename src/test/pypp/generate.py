@@ -24,10 +24,11 @@ cl = mb.class_("RefWrap")
 cl.include()
 functions.convert_vector_of_references_return_type(cl.mem_fun("ints"))
 
-cl = mb.class_("ReturnOptional")
-cl.include()
-for fun in cl.mem_funs():
-    functions.return_optional_by_value(fun)
+for cl_name in ["ReturnOptional", "ReturnOptionalB", "ReturnOptionalC"]:
+    cl = mb.class_(cl_name)
+    cl.include()
+    for fun in cl.mem_funs():
+        functions.return_optional_by_value(fun)
 
 # expose only public interfaces
 namespaces.exclude_by_access_type(mb, ['variables', 'calldefs', 'classes'], 'private')

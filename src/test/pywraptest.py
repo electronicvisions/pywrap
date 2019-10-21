@@ -135,6 +135,10 @@ class Test_Exposer_Utils(unittest.TestCase):
         r = t.ReturnOptional()
         self.assertIsNone(r.test())
         self.assertEqual(42, r.test(42))
+        r2 = t.ReturnOptionalB()
+        self.assertEqual((42, None), r2.test(21, 21))
+        r3 = t.ReturnOptionalC()
+        self.assertEqual((45, 3), r3.test(42, 3))
 
 
 if __name__ == '__main__':

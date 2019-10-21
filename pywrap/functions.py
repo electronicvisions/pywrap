@@ -39,7 +39,7 @@ def return_optional_by_value(fun):
     """
     try:
         klass, args = templates.split(fun.return_type.decl_string)
-        if not klass.endswith('boost::optional'):
+        if not (klass.endswith('boost::optional') or klass.endswith('boost::tuples::tuple')):
             return False
     except AssertionError:
         return False
