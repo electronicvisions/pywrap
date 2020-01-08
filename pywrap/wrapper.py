@@ -47,7 +47,7 @@ class Wrapper(object):
             ])
 
         for cls in self.mb.classes(allow_empty=True):
-            cls.redefine_operators = True
+            cls.redefine_operators = False
 
         # Register dependency modules so that already exposed declarations are 
         # known to us
