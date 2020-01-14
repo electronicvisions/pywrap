@@ -63,7 +63,6 @@ def configure(cfg):
 def build(bld):
     bld(
         target          = "pywrap_inc",
-        use             = [ 'pyublas_inc' ],
         export_includes = [ 'src' ],
     )
 
