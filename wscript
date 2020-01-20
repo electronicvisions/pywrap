@@ -88,7 +88,7 @@ def build_pywrap(bld):
         target          = "pywrap",
         features        = 'cxx cxxshlib pyembed',
         source          = bld.path.ant_glob('src/pywrap/*.cpp'),
-        use             = ['pywrap_inc', 'pywrapsupport', 'PYWRAP'], # propagate python dependency
+        use             = ['pywrap_inc', 'pywrapsupport', 'PYWRAP', 'ZTL'], # propagate python dependency
         install_path    = '${PREFIX}/lib'
     )
 
