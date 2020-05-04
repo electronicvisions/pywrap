@@ -1,14 +1,20 @@
 #!/usr/bin/env python
+from os import environ
 
 from waflib import Logs
 
 
-def depends(ctx):
+def bss1_only_dependencies(ctx):
+    """Dependencies only used within the BSS-1 software stack."""
     if ctx.options.with_pywrap_bindings:
-        # cannot decide if not needed (py2vs3 checks only run in configure)
         ctx('pygccxml')
         ctx('pyplusplus')
         ctx('pyublas')
+
+
+def depends(ctx):
+    if "wafer" in environ.get("SINGULARITY_APPNAME", "").lower():
+        bss1_only_dependencies(ctx)
 
 
 def options(opt):
