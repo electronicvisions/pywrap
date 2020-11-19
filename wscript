@@ -36,14 +36,16 @@ def configure(cfg):
     cfg.env.build_python_bindings = cfg.options.with_pywrap_bindings
 
     cfg.load('compiler_cxx')
-    cfg.load('python')
-    cfg.load('pytest')
+
+    if cfg.env.build_python_bindings:
+        cfg.load('python')
+        cfg.check_python_version(minver=(2, 6))
+        cfg.check_python_headers()
+        cfg.load('pytest')
+
     cfg.load('boost')
 
-    cfg.check_python_version(minver=(2, 6))
-    cfg.check_python_headers()
-
-    if int(cfg.env.PYTHON_VERSION.split('.')[0]) >= 3:
+    if cfg.env.PYTHON_VERSION and int(cfg.env.PYTHON_VERSION.split('.')[0]) >= 3:
         Logs.warn("Python is too new (>= 3); disabling all pywrap/py++/pygccxml-based Python wrapper generation")
         cfg.env.build_python_bindings = False
         cfg.options.with_pywrap_bindings = False
