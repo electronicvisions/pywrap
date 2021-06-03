@@ -2,7 +2,7 @@ import collections
 import re
 
 from . import classes, namespaces
-from matchers import match_std_container_t, namespace_contains_matcher_t
+from .matchers import match_std_container_t, namespace_contains_matcher_t
 from pygccxml.declarations import templates
 from pyplusplus.module_builder import call_policies
 from pyplusplus.messages import warnings_
@@ -39,7 +39,7 @@ class STLExposer(type):
 
     @classmethod
     def list(cls):
-        return cls.registered_exposers.keys()
+        return list(cls.registered_exposers.keys())
 
 class STL_Containers(object):
     @classmethod
@@ -69,9 +69,7 @@ class STL_Containers(object):
             exposer = STLExposer.get(container)
             exposer.rename(c)
 
-class STLExposerBase(object):
-    __metaclass__ = STLExposer
-
+class STLExposerBase(object, metaclass=STLExposer):
     containers = ["pair"]
 
     re_match_number = re.compile(r'(\(.*?\))?(\d+)\w*')
@@ -151,7 +149,7 @@ class STLExposerBase(object):
                     # Put in a closure to get track if the name of class is changed later
                     name.append( decl_alias(decls[0]) )
                 else:
-                    print decls
+                    print(decls)
                     raise RuntimeError("Something weired happend when renaming: " + c.decl_string)
 
         c.rename(make_alias(name))
@@ -179,7 +177,7 @@ class Sequence_Exposer(STLExposerBase):
         classes. add_numpy_construtor(c)
         classes.add_from_pyiterable_converter_to(c)
         c.disable_warnings(warnings_.W1008)
-        for f in c.mem_funs():
+        for f in c.member_functions():
             f.disable_warnings(warnings_.W1008, warnings_.W1050)
 
 class Not_Exposer(STLExposerBase):
@@ -199,7 +197,7 @@ class Bitset_Exposer(STLExposerBase):
         super(Bitset_Exposer, cls).expose(c)
         classes.add_numpy_construtor(c)
         c.disable_warnings(warnings_.W1008)
-        for f in c.mem_funs():
+        for f in c.member_functions():
             f.disable_warnings(warnings_.W1008, warnings_.W1050)
         c.mem_opers().include()
         c.allow_implicit_conversion = True

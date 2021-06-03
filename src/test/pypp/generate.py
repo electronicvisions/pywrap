@@ -27,7 +27,7 @@ functions.convert_vector_of_references_return_type(cl.mem_fun("ints"))
 for cl_name in ["ReturnOptional", "ReturnOptionalB", "ReturnOptionalC"]:
     cl = mb.class_(cl_name)
     cl.include()
-    for fun in cl.mem_funs():
+    for fun in cl.member_functions():
         functions.return_optional_by_value(fun)
 
 # expose only public interfaces

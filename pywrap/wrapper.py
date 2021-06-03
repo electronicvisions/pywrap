@@ -6,6 +6,8 @@ import tempfile
 
 import pyplusplus
 
+from pygccxml.parser import load_xml_generator_configuration
+xml_generator_config = load_xml_generator_configuration('/fasthome/sschmitt/projects/pywrap-py3/gccxml.cfg')
 
 class Wrapper(object):
     def __init__(self, license='//greetings earthling', cpp_revision=201103):
@@ -23,13 +25,15 @@ class Wrapper(object):
         parser.add_argument('sources', nargs='+')
         self.args = parser.parse_args()
 
+        xml_generator_config.include_paths = self.args.includes
+        xml_generator_config.define_symbols = self.args.defines
+
         self.mb = pyplusplus.module_builder.module_builder_t(
             self.args.sources,
             working_directory=os.path.abspath(os.path.curdir),
-            include_paths=self.args.includes,
-            define_symbols=self.args.defines,
             indexing_suite_version=2,
-            cplusplus_revision=cpp_revision
+            xml_generator_config=xml_generator_config
+            #cplusplus_revision=cpp_revision
             )
 
         self.number_of_files = -1

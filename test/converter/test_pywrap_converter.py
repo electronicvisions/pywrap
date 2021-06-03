@@ -5,9 +5,9 @@ import convertertestmodule
 class ConverterTest(unittest.TestCase):
 
     def setUp(self):
-        self.myList = range(5,20)
+        self.myList = list(range(5,20))
         self.sizeLongList = int(1e6)
-        self.aLongList = range(self.sizeLongList)
+        self.aLongList = list(range(self.sizeLongList))
         self.aLongVector = pywrapstdvector.Vector_Double(self.aLongList)
         self.aLongNumpyArray = numpy.array([float(x) for x in self.aLongList])
 
@@ -106,34 +106,34 @@ class ConverterTest(unittest.TestCase):
         will take a consideribly longer time.
         """
         start = time.time()
-        for i in xrange(10):
+        for i in range(10):
             dtype, n = self.callit(self.aLongList)
             self.assertEqual(n, self.sizeLongList)
         runtime_PyIter = time.time()  - start
 
         start = time.time()
-        for i in xrange(10):
+        for i in range(10):
             dtype, n = self.callit(self.aLongVector)
             self.assertEqual(n, self.sizeLongList)
         runtime_Vector = time.time()  - start
 
         # now test if numpy converter is still ok
         start = time.time()
-        for i in xrange(10):
+        for i in range(10):
             dtype, n = self.callit(self.aLongNumpyArray)
             self.assertEqual(n, self.sizeLongList)
         runtime_NumpyArray = time.time()  - start
 
-        print "PyIter took %.3fs" % runtime_PyIter
-        print "Vector took %.3fs" % runtime_Vector
-        print "NumpyArray took %.3fs" % runtime_NumpyArray
+        print("PyIter took %.3fs" % runtime_PyIter)
+        print("Vector took %.3fs" % runtime_Vector)
+        print("NumpyArray took %.3fs" % runtime_NumpyArray)
 
         # I guess that passing down C++ data shold be at least 10 times faster
         self.assertLess(runtime_Vector * 10, runtime_PyIter)
         self.assertLess(runtime_NumpyArray * 10, runtime_PyIter)
 
     def test_nonIterable(self):
-        for T in pywrapstdvector.__dict__.keys():
+        for T in list(pywrapstdvector.__dict__.keys()):
             if T == "Vector_Int32":
                 t, _ = self.callit(getattr(pywrapstdvector, T)(self.myList))
                 self.assertIs(t, int)

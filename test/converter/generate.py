@@ -16,6 +16,6 @@ mb.decl('int_tag').include()
 mb.decl('double_tag').include()
 
 for cls in mb.classes():
-    print cls
+    print(cls)
 
 wrap.finish()

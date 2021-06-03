@@ -3,7 +3,7 @@ from collections import defaultdict
 
 from pyplusplus import decl_wrappers
 
-import algorithms
+from . import algorithms
 
 
 class NamespaceUtil(object):
@@ -93,7 +93,7 @@ class NamespaceUtil(object):
         code = []
         code.append('bp::dict symbols(bp::object scope) {')
         code.append('bp::dict names;')
-        for ns, decls in self.names.iteritems():
+        for ns, decls in list(self.names.items()):
             ns_key = ' ,'.join(['"%s"' % s for s in ns])
             code.append('{')
             code.append('auto key = bp::make_tuple(%s);' % ns_key)

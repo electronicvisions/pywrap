@@ -106,7 +106,7 @@ def add_array_operators(c, policy = None, value_type = None):
     # If there are 2 operators with the same argument type one
     # of them must be a const versions
     # We try to use the non const version
-    for operators in by_arguments.values():
+    for operators in list(by_arguments.values()):
         assert len(operators) < 3
         op = operators[0]
         if op.has_const and len(operators) > 1:
@@ -146,7 +146,7 @@ def beautify_rant_name(c):
     n = c.name
     n = re.sub(r"\(.+?\)", "", n)
     n = re.sub(_remove_ns, "", n)
-    n = re.sub(_clean_numbers, "\g<1>", n)
+    n = re.sub(_clean_numbers, r"\g<1>", n)
     n = re.sub(r"\s+", "", n) # remove spaces
     n = re.sub(r"[<>,]+", "_", n) # <> => _
     n = re.sub(r"integral_constant_[^_]*_", "", n)
@@ -302,7 +302,7 @@ def add_omp_safe_virtual_functions(cls, *args, **kwargs):
 
     cls.include_files.append("pywrap/omp_helper.hpp")
     cls.add_wrapper_code('pywrap::OMPLock lock;')
-    for fun in cls.mem_funs(*args, **kwargs):
+    for fun in cls.member_functions(*args, **kwargs):
         fun.add_override_precall_code('pywrap::ScopedOMPGuard guard(lock);')
         fun.add_override_native_precall_code('guard.unlock();')
 

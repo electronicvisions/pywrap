@@ -45,11 +45,6 @@ def configure(cfg):
 
     cfg.load('boost')
 
-    if cfg.env.PYTHON_VERSION and int(cfg.env.PYTHON_VERSION.split('.')[0]) >= 3:
-        Logs.warn("Python is too new (>= 3); disabling all pywrap/py++/pygccxml-based Python wrapper generation")
-        cfg.env.build_python_bindings = False
-        cfg.options.with_pywrap_bindings = False
-
     if cfg.env.build_python_bindings:
         cfg.load('pypp')
         cfg.find_program('gccxml')

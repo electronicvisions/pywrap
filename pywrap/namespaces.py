@@ -1,8 +1,8 @@
 import re
 import logging
 
-import classes
-from matchers import (
+from . import classes
+from .matchers import (
         access_type_matcher_t, custom_matcher_t,
         namespace_contains_matcher_t, declaration_not_found_t,
         match_std_container_t
@@ -14,7 +14,7 @@ def find(namespace, groups, filters, allow_empty=False):
     that match one of the given filters.  By default raises an error
     if a filter did not match in any group."""
 
-    if isinstance(groups, basestring):
+    if isinstance(groups, str):
         groups = re.split(r'\W+', groups)
 
     groups = set(groups)
@@ -85,7 +85,7 @@ def include_default_copy_constructors(ns):
 def get_deps(ns, matcher = lambda : True, recurse=True):
     decls = set()
     if not hasattr(ns, "declarations"):
-		return decls
+        return decls
     for decl in ns.declarations:
         if not decl.ignore and recurse or not isinstance(decl, namespace_t):
             for deps in  decl.i_depend_on_them():
