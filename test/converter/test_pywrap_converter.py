@@ -48,7 +48,7 @@ class ConverterTest(unittest.TestCase):
         self.assertEqual(dtype, float)
 
     def test_verify_double_conversion(self):
-        x = numpy.linspace(-5 * numpy.pi, 5 * numpy.pi, 1e5)
+        x = numpy.linspace(-5 * numpy.pi, 5 * numpy.pi, int(1e5))
         data = numpy.array(numpy.sin(x) * 10, dtype=numpy.double)
 
         cls = convertertestmodule.ConverterTest()
@@ -57,7 +57,7 @@ class ConverterTest(unittest.TestCase):
         self.assertEqual(cls.test_double_sink(tuple(data)), list(data))
 
     def test_verify_int_conversion(self):
-        x = numpy.linspace(-5 * numpy.pi, 5 * numpy.pi, 1e5)
+        x = numpy.linspace(-5 * numpy.pi, 5 * numpy.pi, int(1e5))
         data = numpy.array(numpy.sin(x) * 10, dtype=numpy.int32)
 
         cls = convertertestmodule.ConverterTest()
@@ -67,7 +67,7 @@ class ConverterTest(unittest.TestCase):
 
     def test_verify_int_list(self):
         cls = convertertestmodule.ConverterTest()
-        x = numpy.linspace(-5 * numpy.pi, 5 * numpy.pi, 1e5)
+        x = numpy.linspace(-5 * numpy.pi, 5 * numpy.pi, int(1e5))
         data = numpy.array(numpy.sin(x) * 10, dtype=numpy.int16)
 
         cls = convertertestmodule.ConverterTest()
@@ -92,7 +92,7 @@ class ConverterTest(unittest.TestCase):
 
     def test_verify_element_vector(self):
         cls = convertertestmodule.ConverterTest()
-        x = numpy.linspace(-5 * numpy.pi, 5 * numpy.pi, 1e5)
+        x = numpy.linspace(-5 * numpy.pi, 5 * numpy.pi, int(1e5))
         expected = [int(ii) for ii in numpy.sin(x) * 121]
         data = [convertertestmodule.Element(ii) for ii in expected]
 

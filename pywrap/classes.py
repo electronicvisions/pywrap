@@ -9,6 +9,7 @@ from copy import copy
 from . import matchers
 from .matchers import access_type_matcher_t, declaration_not_found_t
 from pygccxml.declarations import ACCESS_TYPES, templates
+from pygccxml import declarations
 
 log = logging.getLogger('pywrap.classes')
 
@@ -128,8 +129,8 @@ def add_default_copy_construtor(c):
     Py++ to include it"""
     if c.noncopyable:
         return
-    copy_ctor = c.find_copy_constructor()
-    default_ctor = c.find_trivial_constructor()
+    copy_ctor = declarations.find_copy_constructor(c)
+    default_ctor = declarations.find_trivial_constructor(c)
     if copy_ctor and copy_ctor.is_artificial and copy_ctor.access_type == 'public':
         copy_ctor.exportable = True
         copy_ctor.is_artificial = False
@@ -267,9 +268,9 @@ def add_variant_converters_for(mb, cl):
 
 
 def add_optional_vector_wrapper_for(mb, variable):
-    if not templates.is_instantiation(variable.type.decl_string):
+    if not templates.is_instantiation(variable.decl_type.decl_string):
         return False
-    name, args = templates.split(variable.type.decl_string)
+    name, args = templates.split(variable.decl_type.decl_string)
     if not name == '::boost::optional':
         return False
     assert(len(args) == 1)
@@ -291,7 +292,7 @@ def add_optional_vector_wrapper_for(mb, variable):
             }} )
         ;
     ;
-    """).format(optional=variable.type.decl_string, alias=args[0], v_type=v_type[0]))
+    """).format(optional=variable.decl_type.decl_string, alias=args[0], v_type=v_type[0]))
     return True
 
 

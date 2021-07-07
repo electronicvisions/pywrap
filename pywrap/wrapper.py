@@ -4,10 +4,10 @@ import argparse
 import logging
 import tempfile
 
-import pyplusplus
+from pygccxml import utils
+from pygccxml import parser as gccxmlparser
 
-from pygccxml.parser import load_xml_generator_configuration
-xml_generator_config = load_xml_generator_configuration('/fasthome/sschmitt/projects/pywrap-py3/gccxml.cfg')
+import pyplusplus
 
 class Wrapper(object):
     def __init__(self, license='//greetings earthling', cpp_revision=201103):
@@ -25,15 +25,25 @@ class Wrapper(object):
         parser.add_argument('sources', nargs='+')
         self.args = parser.parse_args()
 
-        xml_generator_config.include_paths = self.args.includes
-        xml_generator_config.define_symbols = self.args.defines
+
+        # Find the location of the xml generator (castxml or gccxml)
+        generator_path, generator_name = utils.find_xml_generator()
+
+        # Configure the xml generator
+        xml_generator_config = gccxmlparser.xml_generator_configuration_t(
+                    xml_generator_path=generator_path,
+                        xml_generator=generator_name,
+                        include_paths=self.args.includes,
+                        define_symbols=self.args.defines
+                        )
+
 
         self.mb = pyplusplus.module_builder.module_builder_t(
             self.args.sources,
             working_directory=os.path.abspath(os.path.curdir),
             indexing_suite_version=2,
+            cplusplus_revision=cpp_revision,
             xml_generator_config=xml_generator_config
-            #cplusplus_revision=cpp_revision
             )
 
         self.number_of_files = -1

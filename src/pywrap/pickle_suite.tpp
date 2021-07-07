@@ -20,14 +20,18 @@ struct pickle_suite : boost::python::pickle_suite {
 			oarchive oa(os);
 			oa << obj;
 		}
+		bp::object tmp(bp::handle<>(PyBytes_FromStringAndSize(
+		    os.str().c_str(),
+		    static_cast<Py_ssize_t>(os.str().size())
+		)));
 
 		if (pyobj.attr("__dict__")) {
 			return boost::python::make_tuple(
-				boost::python::str(os.str()),
+				tmp,
 				pyobj.attr("__dict__")
 			);
 		}
-		return boost::python::str(os.str());
+		return tmp;
 	}
 
 	static void setstate(boost::python::object obj, boost::python::object state) {
