@@ -1,3 +1,4 @@
+#pragma once
 // class template tuple -*- C++ -*-
 
 // Copyright (C) 2004, 2005, 2006 Free Software Foundation, Inc.

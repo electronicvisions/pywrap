@@ -1,4 +1,4 @@
-
+#pragma once
 
 // class template reference_wrapper forwarding header -*- C++ -*-
 

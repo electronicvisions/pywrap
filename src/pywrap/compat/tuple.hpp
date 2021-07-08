@@ -1,3 +1,4 @@
+#pragma once
 #ifndef PYPLUSPLUS
 #include <tuple>
 #else

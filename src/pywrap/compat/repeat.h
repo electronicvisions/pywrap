@@ -1,3 +1,4 @@
+#pragma once
 // TR1 code repetition -*- C++ -*-
 
 // Copyright (C) 2005 Free Software Foundation, Inc.
