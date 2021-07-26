@@ -3,6 +3,7 @@
 #include <bitset>
 #include <functional>
 #include <boost/python.hpp>
+#include <boost/mpl/vector.hpp>
 
 namespace pywrap {
 	namespace bp = boost::python;

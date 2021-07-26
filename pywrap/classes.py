@@ -160,6 +160,7 @@ def expose_std_hash(c):
     stdhash = 'std::hash'
     s = 'hash< %s >' % c.partial_decl_string
     # TODO: add allow_empty option and search for std::hash < CLASS >::operator()
+    c.include_files.append('boost/mpl/vector.hpp')
     c.add_registration_code(
         'def("__hash__", \
              bp::make_function( \
@@ -178,6 +179,7 @@ def add_pickle_suite(c, serialization_framework='boost'):
 
 def add_to_and_from_json(c): # only for cereal
     c.include_files.append('cereal/archives/json.hpp')
+    c.include_files.append('boost/mpl/vector.hpp')
     c.add_registration_code(
         'def("to_json", \
              bp::make_function( \
@@ -209,6 +211,7 @@ def add_context_manager(c, exit_callee=None):
     """Adds context manager stuff (__enter__(self) and __exit__(self, exc_type,
     exc_value, traceback)) to wrapped class"""
     # __enter__ just returns *the* referenced object - lifetime bound to t == itself
+    c.include_files.append('boost/mpl/vector.hpp')
     c.add_registration_code(
         'def("__enter__", bp::make_function( []({0} & t) -> {0} & {{ return t; }}, \
              bp::return_internal_reference<>(), \
