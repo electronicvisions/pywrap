@@ -45,6 +45,12 @@ def configure(cfg):
 
     cfg.load('boost')
 
+    cfg.find_program('gccxml', var='GCCXML', mandatory=False)
+    if not cfg.env.GCCXML:
+        Logs.warn("gccxml not found, disabling pywrap/py++/pygccxml-based Python wrapper generation")
+        cfg.env.build_python_bindings = False
+        cfg.options.with_pywrap_bindings = False
+
     if cfg.env.build_python_bindings:
         cfg.load('pypp')
         cfg.find_program('gccxml')
