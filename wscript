@@ -70,9 +70,18 @@ def configure(cfg):
 
 
 def build(bld):
+    bld.install_files(
+        dest = '${PREFIX}/include',
+        files = bld.path.ant_glob('src/pywrap/**/*.(h|hpp)'),
+        name = 'pywrap_header',
+        relative_trick = True,
+        relative_base = bld.path.find_dir("src")
+    )
+
     bld(
         target          = "pywrap_inc",
         export_includes = [ 'src' ],
+        depends_on = 'pywrap_header'
     )
 
     if bld.env.build_python_bindings:
