@@ -34,7 +34,6 @@ def build(bld):
             headers        = bld.path.ant_glob("src/*.h") + bld.path.ant_glob("src/*.hpp"),
             source         = bld.path.ant_glob("src/*.cpp"),
             linkflags      = '-Wl,-z,defs',
-            install_path   = 'lib',
             **flags
             )
 

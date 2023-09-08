@@ -98,7 +98,6 @@ def build_pywrap(bld):
         features        = 'cxx cxxshlib pyext pyembed',
         source          = 'src/support/pywrapsupport.cpp',
         use             = [ 'pywrap_inc', 'pyublas', 'BOOST_PYWRAP' ],
-        install_path    = '${PREFIX}/lib'
     )
 
     bld(
@@ -106,7 +105,6 @@ def build_pywrap(bld):
         features        = 'cxx cxxshlib pyembed',
         source          = bld.path.ant_glob('src/pywrap/*.cpp'),
         use             = ['pywrap_inc', 'pywrapsupport', 'PYWRAP', 'ZTL'], # propagate python dependency
-        install_path    = '${PREFIX}/lib'
     )
 
     bld(
@@ -114,7 +112,6 @@ def build_pywrap(bld):
         features        = 'cxx cxxshlib pyext pyembed',
         source          = 'src/test/pywraptest.cpp',
         use             = [ 'pywrap' ],
-        install_path    = '${PREFIX}/lib'
     )
 
     bld(
@@ -124,7 +121,6 @@ def build_pywrap(bld):
         use            = ['pywrap'],
         headers        = 'src/support/pywrapstdvector.h',
         script         = 'src/support/pywrapstdvector.py',
-        install_path   = '${PREFIX}/lib'
     )
 
     bld(
@@ -136,7 +132,6 @@ def build_pywrap(bld):
         use            = ['pywrap', 'pywrapstdvector'],
         headers        = bld.path.ant_glob("src/test/pypp/*.hpp"),
         source         = bld.path.ant_glob("src/test/pypp/*.cpp"),
-        install_path   = '${PREFIX}/lib'
     )
 
     bld(
@@ -155,7 +150,6 @@ def build_pywrap(bld):
         script         = 'test/converter/generate.py',
         use            = ['pywrap', 'pywrapstdvector', 'pyublas'],
         headers        = bld.path.ant_glob("test/converter/*.h"),
-        install_path   = '${PREFIX}/lib'
     )
 
     bld(
@@ -174,7 +168,6 @@ def build_pywrap(bld):
         script         = 'test/namespace_util/generate.py',
         use            = ['pywrap'],
         headers        = bld.path.ant_glob("test/namespace_util/*.h"),
-        install_path   = '${PREFIX}/lib'
     )
 
     bld(
@@ -193,5 +186,4 @@ def build_pywrap(bld):
         script         = 'test/omp_helper/generate.py',
         use            = ['pywrap', 'OPENMP4PYWRAP'],
         headers        = bld.path.ant_glob("test/omp_helper/*.h"),
-        install_path   = '${PREFIX}/lib'
     )
