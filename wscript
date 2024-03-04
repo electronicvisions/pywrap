@@ -81,7 +81,7 @@ def build(bld):
     bld(
         target          = "pywrap_inc",
         export_includes = [ 'src' ],
-        depends_on = 'pywrap_header'
+        use             = 'pywrap_header'
     )
 
     if bld.env.build_python_bindings:
